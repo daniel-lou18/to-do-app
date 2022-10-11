@@ -1,3 +1,5 @@
+import './style.css';
+
 const content = document.querySelector('.todo-container');
 
 const Project = class {
