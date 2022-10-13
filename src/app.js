@@ -117,29 +117,37 @@ const App = class {
       <span class="form-date">Échéance</span>
       </button>
       <div class="form-project-container">
-      <button type="button" class="form-project">
-      <svg class="list-dot" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="cornflowerblue" stroke="none" class="feather feather-circle">
-      <circle cx="12" cy="12" r="5"/>
-      </svg>
-      <span class="form-project">Courses</span>
-      </button>
-      <div class="project-input hidden">
+    <input type="checkbox" name="btn-projects" id="btn-projects">
+    <div class="btn-wrapper form-project">
+        <label class="btn-projects" for="btn-projects">
+          <div class="btn-pers-proj hidden">
+            <svg class="list-dot" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="cornflowerblue" stroke="none" class="feather feather-circle">
+              <circle cx="12" cy="12" r="5"/>
+            </svg>
+            <span class="form-project">Courses</span>
+          </div>
+          <div class="btn-inbox-proj">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+              <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+            </svg>
+            <span class="inbox-title">Inbox</span>
+          </div>
+        </label>
+    </div>
+    <div class="project-input">
       <ul class="project-input list">
-      <li class="project-input option selected" data-name= "selected">
-      <svg class="list-dot" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="cornflowerblue" stroke="none" class="feather feather-circle">
-      <circle cx="12" cy="12" r="5"/>
-      </svg>
-      <span class="form-project">Courses</span>
-      </li>
-      <li class="project-input option inbox" data-name= "inbox">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-      <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-      </svg>
-      <span class="inbox-title">Inbox</span>
-      </li>
+        <li class="project-input option inbox">
+          <input type="radio" name="project-option" id="inbox" value="inbox">
+          <label for="inbox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+              <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+            </svg>
+            <span class="inbox-title">Inbox</span>
+          </label>
+        </li>
       </ul>
-      </div>
-      </div>
+    </div>
+  </div>
       <button type="button" class="form-priority">
       <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
       <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
@@ -172,59 +180,103 @@ const App = class {
         console.log(this.projects, taskForm);
       };
 
-      
-        
-      const displayProjects = function() {
-        const btnProjects = e.target.closest('button.form-project');
-        if (!btnProjects) return;
-        const projectInput = btnProjects.nextElementSibling;
-        
-        if (!btnProjects.classList.contains('active') && !btnProjects.classList.contains('generated')) {
-          const ulProjects = btnProjects.closest('.form-project-container').querySelector('ul.project-input');
-          this.projects.forEach((project, index) => {
+      const generateProjectsList = function() {
+        const projectList = document.querySelector('ul.project-input');
+        if (projectList.contains(document.querySelector('li.personal'))) return;
+        this.projects.forEach((project, index) => {
+          if (index > 0) {
+            console.log(project)
             const projectHtml = `
-            <li class="project-input option personal" id="project-name-${index}" data-name= "${project._projectName}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle"><circle cx="12" cy="12" r="5"/></svg>
-            <span class="project-input option">${project._projectName[0].toUpperCase()}${project._projectName.slice(1).toLowerCase()}</span>
-            </li>`
-            if (index > 0) {
-              ulProjects.insertAdjacentHTML('beforeend', projectHtml);
-            };
-          })
-          projectInput.classList.toggle('hidden');
-          btnProjects.classList.toggle('active');
-          ulProjects.addEventListener('click', function(e) {
-            const selectedProject = e.target.closest('li.selected');
-            if (!selectedProject) return;
-            projectInput.classList.toggle('hidden');
-            btnProjects.classList.toggle('active');
-            btnProjects.classList.add('generated');
-          });
-          selectProjectsForm(ulProjects);
-        };
-        
-        if (!btnProjects.classList.contains('active')) {
-          projectInput.classList.toggle('hidden');
-          btnProjects.classList.toggle('active');
-        };
-      }
-
-      function selectProjectsForm(element) {
-        element.addEventListener('click', function(e) {
-          const selectedElement = element.querySelector('li.selected');
-          const selectedOption = e.target.closest('li.option');
-          const cloneSelOption = selectedOption.cloneNode(true);
-          if (!selectedOption) return;
-          cloneSelOption.classList.add('selected');
-          element.removeChild(selectedElement);
-          element.prepend(cloneSelOption);
-        })
+            <li class="project-input option personal" data-id=${project._id}>
+              <input type="radio" name="project-option" id="project-${index}" value="project-${index}">
+              <label for="project-${index}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
+                  <circle cx="12" cy="12" r="5"/>
+                </svg>
+                <span class="project-input option">${project._projectName}</span>
+              </label>
+            </li>
+            `;
+            projectList.insertAdjacentHTML('beforeend', projectHtml);
+          }
+        });
       };
+
+      const selectOption = function() {
+        const checkedProject = e.target.closest('input[type="radio"]');
+        const btnInbox = document.querySelector('.btn-inbox-proj');
+        const btnPersProj = document.querySelector('.btn-pers-proj');
+        const changeButton = function() {
+          if (checkedProject.id !== 'inbox') {
+            btnInbox.classList.add('hidden');
+            btnPersProj.classList.remove('hidden');
+          } else {
+            btnInbox.classList.remove('hidden');
+            btnPersProj.classList.add('hidden');
+          };
+        };
+        if (checkedProject && checkedProject.checked === true) {
+            const btnProjects = checkedProject.closest('.form-project-container').querySelector('input#btn-projects');
+            console.log(checkedProject, btnInbox, btnPersProj);
+            changeButton();
+            const projectName = checkedProject.nextElementSibling.querySelector('span').textContent;
+            btnPersProj.querySelector('span').textContent = projectName;
+            btnProjects.checked = false;
+          }
+      
+      }
+        
+      // const displayProjects = function() {
+      //   const btnProjects = e.target.closest('button.form-project');
+      //   if (!btnProjects) return;
+      //   const projectInput = btnProjects.nextElementSibling;
+        
+      //   if (!btnProjects.classList.contains('active') && !btnProjects.classList.contains('generated')) {
+      //     const ulProjects = btnProjects.closest('.form-project-container').querySelector('ul.project-input');
+      //     this.projects.forEach((project, index) => {
+      //       const projectHtml = `
+      //       <li class="project-input option personal" id="project-name-${index}" data-name= "${project._projectName}">
+      //       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle"><circle cx="12" cy="12" r="5"/></svg>
+      //       <span class="project-input option">${project._projectName[0].toUpperCase()}${project._projectName.slice(1).toLowerCase()}</span>
+      //       </li>`
+      //       if (index > 0) {
+      //         ulProjects.insertAdjacentHTML('beforeend', projectHtml);
+      //       };
+      //     })
+      //     projectInput.classList.toggle('hidden');
+      //     btnProjects.classList.toggle('active');
+      //     ulProjects.addEventListener('click', function(e) {
+      //       const selectedProject = e.target.closest('li.selected');
+      //       if (!selectedProject) return;
+      //       projectInput.classList.toggle('hidden');
+      //       btnProjects.classList.toggle('active');
+      //       btnProjects.classList.add('generated');
+      //     });
+      //     selectProjectsForm(ulProjects);
+      //   };
+        
+      //   if (!btnProjects.classList.contains('active')) {
+      //     projectInput.classList.toggle('hidden');
+      //     btnProjects.classList.toggle('active');
+      //   };
+      // }
+
+      // function selectProjectsForm(element) {
+      //   element.addEventListener('click', function(e) {
+      //     const selectedElement = element.querySelector('li.selected');
+      //     const selectedOption = e.target.closest('li.option');
+      //     const cloneSelOption = selectedOption.cloneNode(true);
+      //     if (!selectedOption) return;
+      //     cloneSelOption.classList.add('selected');
+      //     element.removeChild(selectedElement);
+      //     element.prepend(cloneSelOption);
+      //   })
+      // };
 
       displayNewTaskModal.call(this);   
       saveTask.call(this);
-      displayProjects.call(this);
-      
+      selectOption.call(this);
+      generateProjectsList.call(this);      
       
         
         

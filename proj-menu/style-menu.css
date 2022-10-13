@@ -1,10 +1,4 @@
-@font-face {
-  font-family: 'Roboto';
-  src: url('./roboto-v30-latin-regular.woff2') format('woff2'),
-    url('./roboto-v30-latin-regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 :root {
   --main-hd-color: rgb(255, 99, 71);
@@ -138,15 +132,10 @@ div.project button.add {
 }
 
 input, .btn-svg, textarea {
-  border: none;
+  /* border: none;
   appearance: none;
   outline: none;
-  background: none;
-}
-
-input[type="checkbox"], input[type="radio"] {
-  position: absolute;
-  left: -100vw;
+  background: none; */
 }
 
 input.list-title {
@@ -281,11 +270,13 @@ p.task-descr:hover {
   margin-top: 5px;
 }
 
-.task-form button, .form-project-container {
+.task-form button {
+  height: 28px;
   display: flex;
   align-items: center;
   gap: 3px;
   margin-right: 8px;
+  padding: 7px 5px;
   border: 1px solid var(--main-bd-color);
   border-radius: var(--main-bd-radius);
   background: none;
@@ -302,24 +293,34 @@ p.task-descr:hover {
   position: relative;
 }
 
-li.project-input {
-  /* display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0; */
-}
-
-div.project-input {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200%;
+button.form-project {
   border: 1px solid var(--main-bd-color);
   border-radius: var(--main-bd-radius);
   padding: 0;
+  margin-right: 8px;
+
+}
+
+button.form-project, li.project-input {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px 0 5px;
+}
+
+button.form-project {
+
+}
+
+div.project-input {
+  /* position: absolute;
+  top: 0;
   background-color: white;
+  z-index: 5; */
+}
+
+li.project-input {
+  height: 28px;
 }
 
 .project-input .option {
@@ -328,10 +329,6 @@ div.project-input {
 
 .project-input .option:hover {
   background-color: rgb(245,245,245, 0.8);
-}
-
-.project-input label {
-  padding: 5px 7px;
 }
 
 .form-save {
@@ -394,19 +391,28 @@ div.project-input {
   display: none;
 }
 
-.btn-wrapper label {
-  display: block;
-  padding: 5px 7px;
+.btn-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
-label.btn-projects > *:not(.hidden), .project-input label {
-  display: flex;
-  align-items: center;
-  gap: 3px;
+.btn-wrapper label {
+  border: 1px solid var(--main-bd-color);
+  border-radius: var(--main-bd-radius);
+  padding: 0;
+  margin-right: 8px;
 }
 
 input[type="checkbox"]:checked + .btn-wrapper label {
   background-color: lightgrey;
+}
+
+div.project-input {
+  display: none;
+  border: 1px solid var(--main-bd-color);
+  border-radius: var(--main-bd-radius);
+  padding: 0;
+  margin-right: 8px;
 }
 
 input[type="checkbox"]:checked ~ div.project-input {
