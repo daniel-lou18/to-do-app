@@ -165,7 +165,8 @@ const App = class {
         const addTask = e.target.closest('button.add-task');
         if (!addTask) return;
         backDrop.classList.toggle('hidden');
-        backDrop.insertAdjacentHTML('afterend', htmlNewFormModal);
+        backDrop.insertAdjacentHTML('beforeend', htmlNewFormModal);
+        generateProjectsList.call(this);
       };
   
       const saveTask = function() {
@@ -180,7 +181,7 @@ const App = class {
         console.log(this.projects, taskForm);
       };
 
-      const generateProjectsList = function() {
+      function generateProjectsList() {
         const projectList = document.querySelector('ul.project-input');
         if (projectList.contains(document.querySelector('li.personal'))) return;
         this.projects.forEach((project, index) => {
@@ -193,7 +194,7 @@ const App = class {
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
                   <circle cx="12" cy="12" r="5"/>
                 </svg>
-                <span class="project-input option">${project._projectName}</span>
+                <span class="project-input option">${project._projectName[0].toUpperCase()}${project._projectName.slice(1).toLowerCase()}</span>
               </label>
             </li>
             `;
@@ -204,6 +205,8 @@ const App = class {
 
       const selectOption = function() {
         const checkedProject = e.target.closest('input[type="radio"]');
+        if (!checkedProject) return;
+        const btnProjects = document.querySelector('input#btn-projects');
         const btnInbox = document.querySelector('.btn-inbox-proj');
         const btnPersProj = document.querySelector('.btn-pers-proj');
         const changeButton = function() {
@@ -216,16 +219,25 @@ const App = class {
           };
         };
         if (checkedProject && checkedProject.checked === true) {
-            const btnProjects = checkedProject.closest('.form-project-container').querySelector('input#btn-projects');
-            console.log(checkedProject, btnInbox, btnPersProj);
-            changeButton();
-            const projectName = checkedProject.nextElementSibling.querySelector('span').textContent;
-            btnPersProj.querySelector('span').textContent = projectName;
-            btnProjects.checked = false;
-          }
-      
+          const projectName = checkedProject.nextElementSibling.querySelector('span').textContent;
+          const projectSvgColor = checkedProject.nextElementSibling.querySelector('svg').getAttribute('fill');
+          btnPersProj.querySelector('span').textContent = projectName;
+          btnPersProj.querySelector('svg').setAttribute('fill', projectSvgColor);
+          changeButton();
+          btnProjects.checked = false;          
+        };
+      };
+
+      function clickOutside() {
+        const backdrop = e.target.closest('.backdrop');
+        const projectsContainer = e.target.closest('.form-project-container');
+        if (projectsContainer || !backdrop) return;
+        const btnProjects = document.querySelector('input#btn-projects');
+        if (btnProjects.checked === true && !projectsContainer) {
+          btnProjects.checked = false;
+        };
       }
-        
+ 
       // const displayProjects = function() {
       //   const btnProjects = e.target.closest('button.form-project');
       //   if (!btnProjects) return;
@@ -276,8 +288,8 @@ const App = class {
       displayNewTaskModal.call(this);   
       saveTask.call(this);
       selectOption.call(this);
-      generateProjectsList.call(this);      
-      
+      clickOutside.call(this);
+ 
         
         
         
