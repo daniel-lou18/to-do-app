@@ -1,6 +1,6 @@
 const Task = class {
   date = new Date();
-  id = (new Date() + '').slice(-10);
+  id = (Date.now() + '').slice(-10);
   constructor(taskName, descr, deadline, project, priority) {
     this._taskName = taskName;
     this._descr = descr;

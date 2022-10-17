@@ -1,9 +1,10 @@
 import './style.css';
-import App from './app'
+import app from './app';
 
 const content = document.querySelector('.todo-container');
+const application = app;
 
-const app = new App();
+// const app = new App();
 
 // const Project = class {
 //   tasks = [];
