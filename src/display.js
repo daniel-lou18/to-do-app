@@ -175,7 +175,7 @@ function display(e) {
           console.log(project)
           const projectHtml = `
           <li class="project-input option personal" data-id=${project._id}>
-            <input type="radio" name="project-option" id="project-${index}" value=${project._projectName}>
+            <input class="project-option"type="radio" name="project-option" id="project-${index}" value=${project._projectName}>
             <label for="project-${index}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
                 <circle cx="12" cy="12" r="5"/>
@@ -190,7 +190,7 @@ function display(e) {
     };
 
     const selectOption = function() {
-      const checkedProject = e.target.closest('input[type="radio"]');
+      const checkedProject = e.target.closest('input[type="radio"].project-option');
       if (!checkedProject) return;
       const btnProjects = document.querySelector('input#btn-projects');
       const btnInbox = document.querySelector('.btn-inbox-proj');
@@ -242,9 +242,28 @@ function display(e) {
       };
   };
 
+  const selectProject = function() {
+    document.querySelectorAll('label.sidebar-project').forEach(label => label.style.backgroundColor = 'var(--main-bg-color)');
+    const projectInput = e.target.closest('input.sidebar-project');
+    if (!projectInput) return;
+    const projectLabel = projectInput.nextElementSibling;
+    const svg = projectLabel.querySelector('svg');
+    const displaySelectedProject = function() {
+      let textInput = document.querySelector('input.list-title');
+      let colorInput = document.querySelector('.list-dot');
+      textInput.value = projectInput.value[0].toUpperCase() + projectInput.value.slice(1);
+      colorInput.setAttribute('fill', svg.getAttribute('fill'));
+    };
+
+    if (projectInput.checked) {
+      projectLabel.style.backgroundColor = 'var(--main-hv-color)';
+      displaySelectedProject();
+    };
+  };
   
   displayModifyTask.call(this);
   displayNewTask.call(this);
+  selectProject.call(this);
 }
 
 export default display;
