@@ -178,7 +178,7 @@ input.list-title {
 }
 
 
-.task:first-child .task-check {
+.task .task-check {
   position: absolute;
   left: -100vw;
 }
@@ -199,11 +199,11 @@ input.list-title {
   transform: scale(1.1);
 }
 
-.task:first-child .task-check + label span.task-text {
+.task .task-check + label span.task-text {
   position: relative;
 }
 
-.task:first-child .task-check:checked + label span.task-text:after {
+.task .task-check:checked + label span.task-text:after {
   content: "";
   position: absolute;
   left: 0;
@@ -217,7 +217,7 @@ input.list-title {
   opacity: 0;
 }
 
-.task:first-child .task-check:checked + label svg {
+.task .task-check:checked + label svg {
   opacity: 1;
 }
 

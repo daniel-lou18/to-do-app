@@ -1,10 +1,12 @@
-const generateProjects = function(element) {
+const generateProjects = function() {
+  const element = document.querySelector('.personal-projects-list');
+  document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
   this.projects.forEach((project, index) => {
     if (index > 0) {
       console.log(project)
       const projectHtml = `
-      <li class="sidebar-project sidebar-personal" data-id=${project._id}>
-        <input class="sidebar-project" type="radio" name="project-option" id="sidebar-project-${index}" value=${project._projectName}>
+      <li class="sidebar-project sidebar-personal" data-id=${project.id}>
+        <input class="sidebar-project" data-id=${project.id} type="radio" name="project-option" id="sidebar-project-${index}" value=${project._projectName}>
         <label class="sidebar-project project" for="sidebar-project-${index}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
             <circle cx="12" cy="12" r="5"/>
@@ -19,10 +21,10 @@ const generateProjects = function(element) {
   });
 };
 
-const updateSidebarProjects = function() {
-  document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
-  generateProjects.call(this, document.querySelector('.personal-projects-list'));
-};
+// const updateSidebarProjects = function() {
+//   document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
+//   generateProjects.call(this, document.querySelector('.personal-projects-list'));
+// };
 
-export {generateProjects as default, updateSidebarProjects};
+export default generateProjects;
 

@@ -1,6 +1,7 @@
 import Project from './project';
 import Task from './task';
-import {updateSidebarProjects} from './sidebar';
+import generateProjects from './sidebar';
+import generateTasks from './main-content';
 
 function display(e) {
   const displayModifyTask = function() {
@@ -163,7 +164,8 @@ function display(e) {
       console.log(taskProject);
       const task = new Task(taskTextInput.value, taskDescrInput.value, 0, taskProject.value);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
-      updateSidebarProjects.call(this);
+      generateProjects.call(this);
+      generateTasks.call(this)
       console.log(this.projects, taskForm);
     };
 
@@ -174,7 +176,7 @@ function display(e) {
         if (index > 0) {
           console.log(project)
           const projectHtml = `
-          <li class="project-input option personal" data-id=${project._id}>
+          <li class="project-input option personal" data-id=${project.id}>
             <input class="project-option"type="radio" name="project-option" id="project-${index}" value=${project._projectName}>
             <label for="project-${index}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
@@ -258,6 +260,7 @@ function display(e) {
     if (projectInput.checked) {
       projectLabel.style.backgroundColor = 'var(--main-hv-color)';
       displaySelectedProject();
+      generateTasks.call(this);
     };
   };
   

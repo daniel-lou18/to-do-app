@@ -1,11 +1,10 @@
 const Project = class {
   date = new Date();
-  id = (Date.now() + '').slice(-10);
   tasks = [];
   constructor(projectName, color) {
     this._projectName = projectName;
     this._color = color;
-    this._id = new Date()
+    this.id = projectName + '-' + (Date.now() + '').slice(-10);
     this.message();
   }
 
