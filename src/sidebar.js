@@ -1,5 +1,6 @@
 const generateProjects = function() {
   const element = document.querySelector('.personal-projects-list');
+  const activeProject = [...document.querySelectorAll('input.sidebar-project')]
   document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
   this.projects.forEach((project, index) => {
     if (index > 0) {

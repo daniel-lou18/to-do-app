@@ -3,6 +3,7 @@ import app from "./app";
 const generateTasks = function() {
   const [selectedProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
   document.querySelectorAll('.task').forEach(task => document.querySelector('.tasks-container').removeChild(task));
+  console.log(selectedProject);
   const [project] = this.projects.filter(project => project.id === selectedProject.dataset.id);
   console.log(project);
   project.tasks.forEach((task, index) => {

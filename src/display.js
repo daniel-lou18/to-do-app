@@ -4,6 +4,8 @@ import generateProjects from './sidebar';
 import generateTasks from './main-content';
 
 function display(e) {
+  const backDrop = document.querySelector('.backdrop');
+
   const displayModifyTask = function() {
     const htmlFormModify = `<form class="task-form" id="task-0">
     <div class="form-main">
@@ -83,7 +85,6 @@ function display(e) {
   }
   
   const displayNewTask = function() {
-    const backDrop = document.querySelector('.backdrop');
     const htmlNewFormModal = `
     <form class="task-form modal new-task" id="task-0">
     <div class="form-main">
@@ -121,7 +122,7 @@ function display(e) {
   <div class="project-input">
     <ul class="project-input list">
       <li class="project-input option inbox">
-        <input type="radio" name="project-option" id="inbox" value="inbox">
+        <input class="project-option" type="radio" name="project-option" id="inbox" value="inbox" checked>
         <label for="inbox">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
             <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
@@ -140,7 +141,7 @@ function display(e) {
     </div>
     </div>
     <div class="form-save">
-    <button type="button">Annnuler</button>
+    <button class="cancel-new-task cancel" type="button">Annnuler</button>
     <button class="save-new-task save">Enregistrer</button>
     </div>
     </form>`;
@@ -153,6 +154,20 @@ function display(e) {
       generateProjectsList.call(this);
     };
 
+    const closeModal = function() {
+      backDrop.classList.toggle('hidden');
+      backDrop.removeChild(document.querySelector('.modal'));
+    }
+
+    const cancelModal = function() {
+      const btnProjects = document.querySelector('input#btn-projects');
+      const outsideModal = e.target.closest('.backdrop');
+      const cancelBtn = e.target.closest('.cancel-new-task');
+      if (cancelBtn) closeModal();
+      if (!outsideModal || e.target.closest('.modal') || btnProjects.checked) return;
+      closeModal();
+    };
+
     const saveTask = function() {
       const saveBtn = e.target.closest('button.save-new-task');
       if (!saveBtn) return;
@@ -160,12 +175,13 @@ function display(e) {
       const taskForm = e.target.closest(`form.task-form`);
       const taskTextInput = taskForm.querySelector('input.form-text');
       const taskDescrInput = taskForm.querySelector('textarea.form-descr');
-      const [taskProject] = [...taskForm.querySelectorAll('li.personal input')].filter(input => input.checked);
+      const [taskProject] = [...taskForm.querySelectorAll('li.project-input input')].filter(input => input.checked);
       console.log(taskProject);
       const task = new Task(taskTextInput.value, taskDescrInput.value, 0, taskProject.value);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
-      generateTasks.call(this)
+      closeModal();
+      // generateTasks.call(this);
       console.log(this.projects, taskForm);
     };
 
@@ -221,15 +237,16 @@ function display(e) {
       const projectsContainer = e.target.closest('.form-project-container');
       if (projectsContainer || !backdrop) return;
       const btnProjects = document.querySelector('input#btn-projects');
-      if (btnProjects.checked === true && !projectsContainer) {
+      if (btnProjects && btnProjects.checked && !projectsContainer) {
         btnProjects.checked = false;
       };
     };
 
-    displayNewTaskModal.call(this);   
+    displayNewTaskModal.call(this);
+    cancelModal();
     saveTask.call(this);
     selectOption.call(this);
-    clickOutside.call(this);   
+    clickOutside.call(this);
       
       const displayFormDate = function() {
         const btnDate = e.target.closest('button.form-date');
