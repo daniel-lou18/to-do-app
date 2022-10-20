@@ -5,6 +5,8 @@ import generateTasks from './main-content';
 
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
+  const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
+  
 
   const displayModifyTask = function() {
     const htmlFormModify = `<form class="task-form" id="task-0">
@@ -181,7 +183,7 @@ function display(e) {
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
       closeModal();
-      // generateTasks.call(this);
+      generateTasks.call(this);
       console.log(this.projects, taskForm);
     };
 
@@ -280,10 +282,47 @@ function display(e) {
       generateTasks.call(this);
     };
   };
+
+  const taskBtns = function() {
+    const findTask = function(taskElem) {
+      const projectIndex = this.projects.findIndex(proj => proj.id === activeProject.dataset.id);
+      const taskIndex = this.projects[projectIndex].tasks.findIndex(task => task.id === taskElem.dataset.id);
+      return [projectIndex, taskIndex];
+    };
+
+    const moveTask = function() {
+      const btn = e.target.closest('button.move');
+      if (!btn) return;
+      const taskEl = btn.closest('.task');
+      const [projectIndex, taskIndex] = findTask.call(this, taskEl);
+      const [clickedTask] = this.projects[projectIndex].tasks.splice(taskIndex, 1);
+      btn.classList.contains('move-up') ? this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask) : this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
+      generateTasks.call(this);
+    };
+
+    const deleteTask = function() {
+      const btn = e.target.closest('button.del-task');
+      if (!btn) return;
+      const taskEl = btn.closest('.task');
+      const [projectIndex, taskIndex] = findTask.call(this, taskEl);
+      this.projects[projectIndex].tasks.splice(taskIndex, 1);
+      generateTasks.call(this);
+      generateProjects.call(this);
+    };
+
+    moveTask.call(this);
+    deleteTask.call(this);
+    // const [task] = this.projects
+    //   .filter(project => project.id === activeProject.dataset.id)
+    //   .flatMap(proj => proj.tasks)
+    //   .filter((task => task.id === taskEl.dataset.id));
+  }
+
   
   displayModifyTask.call(this);
   displayNewTask.call(this);
   selectProject.call(this);
+  taskBtns.call(this);
 }
 
 export default display;

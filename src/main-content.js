@@ -1,5 +1,3 @@
-import app from "./app";
-
 const generateTasks = function() {
   const [selectedProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
   document.querySelectorAll('.task').forEach(task => document.querySelector('.tasks-container').removeChild(task));
@@ -16,10 +14,10 @@ const generateTasks = function() {
         </span>
         <span class="task-text">${task._taskName}</span>
       </label>
-      <button class="btn-svg list-actions move-up">
+      <button class="btn-svg list-actions move move-up">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
-      <button class="btn-svg list-actions move-down">
+      <button class="btn-svg list-actions move move-down">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
       </button>
       <button class="btn-svg list-actions edit-task">
@@ -39,6 +37,8 @@ const generateTasks = function() {
     `;
     document.querySelector('.tasks-container').insertAdjacentHTML('beforeend', html);
   });
+  
 };
+
 
 export default generateTasks;

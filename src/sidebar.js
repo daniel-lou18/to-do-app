@@ -1,10 +1,9 @@
 const generateProjects = function() {
   const element = document.querySelector('.personal-projects-list');
-  const activeProject = [...document.querySelectorAll('input.sidebar-project')]
+  const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
   document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
   this.projects.forEach((project, index) => {
     if (index > 0) {
-      console.log(project)
       const projectHtml = `
       <li class="sidebar-project sidebar-personal" data-id=${project.id}>
         <input class="sidebar-project" data-id=${project.id} type="radio" name="project-option" id="sidebar-project-${index}" value=${project._projectName}>
@@ -20,6 +19,8 @@ const generateProjects = function() {
       element.insertAdjacentHTML('beforeend', projectHtml);
     }
   });
+  const [newActiveProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.id === activeProject?.id);
+  activeProject ? newActiveProject.checked = true : document.querySelector('input.sidebar-project').checked = true;
 };
 
 // const updateSidebarProjects = function() {
