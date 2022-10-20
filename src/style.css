@@ -137,7 +137,7 @@ div.project button.add {
   font-weight: 600;
 }
 
-/* input, .btn-svg, textarea {
+input, .btn-svg, textarea {
   border: none;
   appearance: none;
   outline: none;
@@ -147,7 +147,7 @@ div.project button.add {
 input[type="checkbox"], input[type="radio"] {
   position: absolute;
   left: -100vw;
-} */
+}
 
 input.list-title {
   font-size: 1.2rem;
