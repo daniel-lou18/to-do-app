@@ -81,17 +81,12 @@ function display(e) {
     backDrop.classList.toggle('hidden');
     backDrop.insertAdjacentHTML('beforeend', htmlNewFormModal);
     generateProjectsList.call(this, document.querySelector('.modal ul.project-input'));
+    selectedOption.call(this);
   };
 
   const closeModal = function() {
     backDrop.classList.toggle('hidden');
     backDrop.removeChild(document.querySelector('.modal'));
-  };
-
-  const closeModify = function() {
-    const modifyWindow = document.querySelector('.modify');
-    const container = document.querySelector('.tasks-container');
-    document.querySelector('.tasks-container').removeChild(document.querySelector('.modify'));
   };
 
   const cancelModal = function() {
@@ -134,31 +129,6 @@ function display(e) {
     generateProjects.call(this);
     document.querySelector('.tasks-container').removeChild(document.querySelector('.modify'));
     generateTasks.call(this);
-  };
-
-  const selectOption = function() {
-    const checkedProject = e.target.closest('input[type="radio"].project-option');
-    if (!checkedProject) return;
-    const btnProjects = document.querySelector('input#btn-projects');
-    const btnInbox = document.querySelector('.btn-inbox-proj');
-    const btnPersProj = document.querySelector('.btn-pers-proj');
-    const changeButton = function() {
-      if (checkedProject.id !== 'inbox') {
-        btnInbox.classList.add('hidden');
-        btnPersProj.classList.remove('hidden');
-      } else {
-        btnInbox.classList.remove('hidden');
-        btnPersProj.classList.add('hidden');
-      };
-    };
-    if (checkedProject && checkedProject.checked === true) {
-      const projectName = checkedProject.nextElementSibling.querySelector('span').textContent;
-      const projectSvgColor = checkedProject.nextElementSibling.querySelector('svg').getAttribute('fill');
-      btnPersProj.querySelector('span').textContent = projectName;
-      btnPersProj.querySelector('svg').setAttribute('fill', projectSvgColor);
-      changeButton();
-      btnProjects.checked = false;          
-    };
   };
 
   function clickOutside() {
@@ -239,6 +209,7 @@ function display(e) {
         task.classList.toggle('hidden');
         task.insertAdjacentHTML('afterend', htmlFormModify);
         generateProjectsList.call(this, document.querySelector('.modify ul.project-input'));
+        selectedOption.call(this);
       };
     };
     
@@ -251,7 +222,6 @@ function display(e) {
     displayNewTaskModal.call(this);
     cancelModal();
     saveTask.call(this);
-    selectOption.call(this);
     clickOutside.call(this);
       
       const displayFormDate = function() {
@@ -265,6 +235,44 @@ function display(e) {
         if (!btnPriority) return;
         console.log(btnPriority);
       };
+  };
+
+  const displayProjectOptionsButton = function(elem) {
+    const btnInbox = document.querySelector('.btn-inbox-proj');
+    const btnPersProj = document.querySelector('.btn-pers-proj');
+    if (elem.id !== 'inbox') {
+      btnInbox.classList.add('hidden');
+      btnPersProj.classList.remove('hidden');
+    } else {
+      btnInbox.classList.remove('hidden');
+      btnPersProj.classList.add('hidden');
+    };
+  };
+
+  const setProjectOptionsButton = function(elem) {
+    const btnPersProj = document.querySelector('.btn-pers-proj');
+    const projectName = elem.nextElementSibling.querySelector('span').textContent;
+    const projectSvgColor = elem.nextElementSibling.querySelector('svg').getAttribute('fill');
+    btnPersProj.querySelector('span').textContent = projectName;
+    btnPersProj.querySelector('svg').setAttribute('fill', projectSvgColor);
+  }
+
+  const selectedOption = function() {
+    setProjectOptionsButton(activeProject);
+    displayProjectOptionsButton(activeProject);
+    const [activeOption] = [...document.querySelectorAll('input[type="radio"].project-option')].filter(input => input.value === activeProject.value);
+    activeOption.checked = true;
+  };
+
+  const selectOption = function() {
+    const checkedProject = e.target.closest('input[type="radio"].project-option');
+    if (!checkedProject) return;
+    const btnProjects = document.querySelector('input#btn-projects');
+    if (checkedProject && checkedProject.checked) {
+      setProjectOptionsButton(checkedProject);
+      displayProjectOptionsButton(checkedProject);
+      btnProjects.checked = false;          
+    };
   };
 
   const selectProject = function() {
@@ -315,6 +323,7 @@ function display(e) {
   
   displayModifyTask.call(this);
   displayNewTask.call(this);
+  selectOption.call(this);
   selectProject.call(this);
   taskBtns.call(this);
 }
