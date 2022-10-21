@@ -1,4 +1,10 @@
+const initInbox = function() {
+  const input = document.querySelector('input#sidebar-inbox');
+  input.setAttribute('data-id', `${this.projects[0].id}`);
+};
+
 const generateProjects = function() {
+  initInbox.call(this);
   const element = document.querySelector('.personal-projects-list');
   const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
   document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
@@ -22,11 +28,6 @@ const generateProjects = function() {
   const [newActiveProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.id === activeProject?.id);
   activeProject ? newActiveProject.checked = true : document.querySelector('input.sidebar-project').checked = true;
 };
-
-// const updateSidebarProjects = function() {
-//   document.querySelectorAll('li.sidebar-personal').forEach(el => document.querySelector('.personal-projects-list').removeChild(el));
-//   generateProjects.call(this, document.querySelector('.personal-projects-list'));
-// };
 
 export default generateProjects;
 
