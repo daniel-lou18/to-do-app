@@ -7,7 +7,12 @@ import generateProjectsList from './generate-projects-list';
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
   const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
-  const activeTask = activeProject.tasks
+  const getActiveProject = (selector) => {
+    const [activeProject] = [...document.querySelectorAll(selector)].filter(input => input.checked);
+    const [project] = this.projects.filter(project => project.id === activeProject.dataset.id);
+    return project;
+  };
+  const activeTask = activeProject.tasks;
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -25,28 +30,22 @@ function display(e) {
   </svg>
   <span class="form-date">Échéance</span>
   </button>
-  <div class="form-project-container">
+  <div class="form-project-container form-container">
 <input type="checkbox" name="btn-projects" id="btn-projects">
 <div class="btn-wrapper form-project">
     <label class="btn-projects" for="btn-projects">
-      <div class="btn-pers-proj hidden">
+      <div class="btn-pers-proj">
         <svg class="list-dot" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="cornflowerblue" stroke="none" class="feather feather-circle">
           <circle cx="12" cy="12" r="5"/>
         </svg>
         <span class="form-project">Courses</span>
-      </div>
-      <div class="btn-inbox-proj">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-          <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-        </svg>
-        <span class="inbox-title">Inbox</span>
       </div>
     </label>
 </div>
 <div class="project-input">
   <ul class="project-input list">
     <li class="project-input option inbox">
-      <input class="project-option" type="radio" name="project-option" id="inbox" value="inbox" checked>
+      <input class="project-option" type="radio" name="project-option" data-id= "${this.projects[0].id}" id="inbox" value="inbox" checked>
       <label for="inbox">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
           <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
@@ -54,6 +53,23 @@ function display(e) {
         <span class="inbox-title">Inbox</span>
       </label>
     </li>
+  </ul>
+</div>
+</div>
+<div class="form-priority-container form-container">
+<input type="checkbox" name="btn-priority" id="btn-priority">
+<div class="btn-wrapper form-priority">
+    <label class="btn-priority" for="btn-priority">
+      <div class="btn-priority">
+        <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+        </svg>
+        <span class="form-priority"></span>
+      </div>
+    </label>
+</div>
+<div class="priority-input">
+  <ul class="priority-input list">
   </ul>
 </div>
 </div>
@@ -102,28 +118,22 @@ function display(e) {
     </svg>
     <span class="form-date">19 oct</span>
     </button>
-    <div class="form-project-container">
+    <div class="form-project-container form-container">
     <input type="checkbox" name="btn-projects" id="btn-projects">
     <div class="btn-wrapper form-project">
         <label class="btn-projects" for="btn-projects">
-          <div class="btn-pers-proj hidden">
+          <div class="btn-pers-proj">
             <svg class="list-dot" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="cornflowerblue" stroke="none" class="feather feather-circle">
               <circle cx="12" cy="12" r="5"/>
             </svg>
             <span class="form-project">Courses</span>
-          </div>
-          <div class="btn-inbox-proj">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-              <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-            </svg>
-            <span class="inbox-title">Inbox</span>
           </div>
         </label>
     </div>
     <div class="project-input">
     <ul class="project-input list">
       <li class="project-input option inbox">
-        <input class="project-option" type="radio" name="project-option" id="inbox" value="inbox" checked>
+        <input class="project-option" type="radio" name="project-option" data-id= "${this.projects[0].id}" id="inbox" value="inbox" checked>
         <label for="inbox">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
             <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
@@ -274,29 +284,39 @@ function display(e) {
       };
   };
 
-  const displayProjectOptionsButton = function(elem) {
-    const btnInbox = document.querySelector('.btn-inbox-proj');
-    const btnPersProj = document.querySelector('.btn-pers-proj');
-    if (elem.id !== 'inbox') {
-      btnInbox.classList.add('hidden');
-      btnPersProj.classList.remove('hidden');
-    } else {
-      btnInbox.classList.remove('hidden');
-      btnPersProj.classList.add('hidden');
-    };
+  // const displayProjectOptionsButton = function(elem) {
+  //   const btnInbox = document.querySelector('.btn-inbox-proj');
+  //   const btnPersProj = document.querySelector('.btn-pers-proj');
+  //   if (elem.id !== 'sidebar-inbox') {
+  //     btnInbox.classList.add('hidden');
+  //     btnPersProj.classList.remove('hidden');
+  //   } else {
+  //     btnInbox.classList.remove('hidden');
+  //     btnPersProj.classList.add('hidden');
+  //   };
+  // };
+
+  const generateSvgProjectOptionsButton = function(container, svgEl, project) {
+    const projectSvg = project._svg;
+      container.removeChild(svgEl);
+      container.insertAdjacentHTML('afterbegin', projectSvg);
+      container.querySelector('svg').setAttribute('width', 20);
+      container.querySelector('svg').setAttribute('height', 20);
   };
 
-  const setProjectOptionsButton = function(elem) {
+
+  const setProjectOptionsButton = function(project) {
+    // const selectedProjectOption = getActiveProject('.project-option');
+    // console.log(selectedProjectOption);
     const btnPersProj = document.querySelector('.btn-pers-proj');
-    const projectName = elem.nextElementSibling.querySelector('span').textContent;
-    const projectSvgColor = elem.nextElementSibling.querySelector('svg').getAttribute('fill');
+    const projectName = project.capitalizedProjectName;
     btnPersProj.querySelector('span').textContent = projectName;
-    btnPersProj.querySelector('svg').setAttribute('fill', projectSvgColor);
+    generateSvgProjectOptionsButton(btnPersProj, btnPersProj.querySelector('svg'), project)
   }
 
   const selectedOption = function() {
-    setProjectOptionsButton(activeProject);
-    displayProjectOptionsButton(activeProject);
+    setProjectOptionsButton(getActiveProject('input.sidebar-project'));
+    // displayProjectOptionsButton(activeProject);
     const [activeOption] = [...document.querySelectorAll('input[type="radio"].project-option')].filter(input => input.value === activeProject.value);
     activeOption.checked = true;
   };
@@ -304,10 +324,12 @@ function display(e) {
   const selectOption = function() {
     const checkedProject = e.target.closest('input[type="radio"].project-option');
     if (!checkedProject) return;
+    const selectedProject = getActiveProject('.project-option');
+    console.log(selectedProject);
     const btnProjects = document.querySelector('input#btn-projects');
     if (checkedProject && checkedProject.checked) {
-      setProjectOptionsButton(checkedProject);
-      displayProjectOptionsButton(checkedProject);
+      setProjectOptionsButton(selectedProject);
+      // displayProjectOptionsButton(checkedProject);
       btnProjects.checked = false;          
     };
   };

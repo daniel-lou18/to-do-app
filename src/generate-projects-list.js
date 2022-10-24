@@ -6,7 +6,7 @@ function generateProjectsList(element) {
       console.log(project)
       const projectHtml = `
       <li class="project-input option personal" data-id=${project.id}>
-        <input class="project-option"type="radio" name="project-option" id="project-${index}" value=${project._projectName}>
+        <input class="project-option"type="radio" name="project-option" data-id = "${project.id}" id="project-${index}" value=${project._projectName}>
         <label for="project-${index}">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
             <circle cx="12" cy="12" r="5"/>

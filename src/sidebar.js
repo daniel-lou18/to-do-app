@@ -1,6 +1,9 @@
 const initInbox = function() {
   const input = document.querySelector('input#sidebar-inbox');
-  input.setAttribute('data-id', `${this.projects[0].id}`);
+  const count = document.querySelector('.inbox-count');
+  input.setAttribute('data-id', this.projects[0].id);
+  count.textContent = this.projects[0].tasks.length;
+
 };
 
 const generateProjects = function() {

@@ -1,0 +1,20 @@
+function generatePriorityList(element) {
+  const projectList = element;
+  const priorities = ['no', 'low', 'normal', 'high']
+  if (projectList.contains(document.querySelector('li.priority-item'))) return;
+  priorities.forEach((priority, index) => {
+    const html = `
+      <li class="priority-input option priority-item" data-id="">
+        <input class="priority-option"type="radio" name="priority-option" data-id = "" id="priority-${index}" value="">
+        <label for="priority-${index}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="" stroke="none" class="feather feather-circle">
+            <circle cx="12" cy="12" r="5"/>
+          </svg>
+          <span class="priority-input option"></span>
+        </label>
+      </li>
+      `;
+      projectList.insertAdjacentHTML('beforeend', html);
+  })
+  
+};

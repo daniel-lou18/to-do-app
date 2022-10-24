@@ -281,7 +281,7 @@ p.task-descr:hover {
   margin-top: 5px;
 }
 
-.task-form button, .form-project-container {
+.task-form button, .form-container {
   display: flex;
   align-items: center;
   gap: 3px;
