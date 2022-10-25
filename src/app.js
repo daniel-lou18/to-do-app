@@ -18,9 +18,9 @@ const App = class {
     this.projects.push(enfants);
     const travaux = new PersonalProject('travaux', 'darkorange');
     this.projects.push(travaux);
-    const task1 = new Task('Réparer robinet', 'salle de bains', 0, 'travaux');
+    const task1 = new Task('Réparer robinet', 'salle de bains', 1, 'travaux');
     travaux.tasks.push(task1);
-    const task2 = new Task('Déboucher l\'évier', 'acheter du produit', 0, 'travaux');
+    const task2 = new Task('Déboucher l\'évier', 'acheter du produit', 3, 'travaux');
     travaux.tasks.push(task2);
   }
 };

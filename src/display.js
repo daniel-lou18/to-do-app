@@ -3,6 +3,7 @@ import Task from './task';
 import generateProjects from './sidebar';
 import generateTasks from './main-content';
 import generateProjectsList from './generate-projects-list';
+import generatePriorityList from './generate-priority-list';
 
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
@@ -61,7 +62,7 @@ function display(e) {
 <div class="btn-wrapper form-priority">
     <label class="btn-priority" for="btn-priority">
       <div class="btn-priority">
-        <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+        <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
         </svg>
         <span class="form-priority"></span>
@@ -73,11 +74,6 @@ function display(e) {
   </ul>
 </div>
 </div>
-  <button type="button" class="form-priority">
-  <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
-  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
-  </svg>
-  </button>
   </div>
   </div>
   <div class="form-save">
@@ -144,11 +140,23 @@ function display(e) {
     </ul>
 </div>
 </div>
-<button type="button" class="form-priority">
-<svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
-<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
-</svg>
-</button>
+  <div class="form-priority-container form-container">
+  <input type="checkbox" name="btn-priority" id="btn-priority">
+  <div class="btn-wrapper form-priority">
+      <label class="btn-priority" for="btn-priority">
+        <div class="btn-priority">
+          <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+          </svg>
+          <span class="form-priority"></span>
+        </div>
+      </label>
+  </div>
+  <div class="priority-input">
+    <ul class="priority-input list">
+    </ul>
+  </div>
+  </div>
 </div>
 </div>
 <div class="form-save">
@@ -172,12 +180,10 @@ function display(e) {
 
     const clickOutsideModifyForm = function() {
       const form = document.querySelector('.modify');
-      const modifyBtn = e.target.closest('.modify button.cancel-new-task');
       const input = e.target.closest('input');
       const btn = e.target.closest('button');
-      if (!form || btn?.classList.contains('edit-task') || input?.closest('.modify') || btn?.closest('.modify')) return;
+      if (!form || (btn?.classList.contains('edit-task')) || input?.closest('.modify') || btn?.closest('.modify')) return;
       if (input || btn) closeModifyForm();
-
     }
   
     const saveModifiedTask = function() {
@@ -212,14 +218,14 @@ function display(e) {
         generateModifyTaskContent.call(this, task);
         generateProjectsList.call(this, document.querySelector('.modify ul.project-input'));
         selectedOption.call(this);
+        generatePriorityList.call(this, document.querySelector('.modify ul.priority-input'));
       };
     };
     
     displayFormModify.call(this);
     saveModifiedTask.call(this);
+    clickOutsideModifyForm();    
     cancelModifyForm();
-    clickOutsideModifyForm();
-    
   };
   
   const displayNewTask = function() {
@@ -230,6 +236,7 @@ function display(e) {
       backDrop.insertAdjacentHTML('beforeend', htmlNewFormModal);
       generateProjectsList.call(this, document.querySelector('.modal ul.project-input'));
       selectedOption.call(this);
+      generatePriorityList.call(this, document.querySelector('ul.priority-input'));
     };
   
     const closeModal = function() {
@@ -284,61 +291,61 @@ function display(e) {
       };
   };
 
-  // const displayProjectOptionsButton = function(elem) {
-  //   const btnInbox = document.querySelector('.btn-inbox-proj');
-  //   const btnPersProj = document.querySelector('.btn-pers-proj');
-  //   if (elem.id !== 'sidebar-inbox') {
-  //     btnInbox.classList.add('hidden');
-  //     btnPersProj.classList.remove('hidden');
-  //   } else {
-  //     btnInbox.classList.remove('hidden');
-  //     btnPersProj.classList.add('hidden');
-  //   };
-  // };
-
   const generateSvgProjectOptionsButton = function(container, svgEl, project) {
     const projectSvg = project._svg;
-      container.removeChild(svgEl);
-      container.insertAdjacentHTML('afterbegin', projectSvg);
-      container.querySelector('svg').setAttribute('width', 20);
-      container.querySelector('svg').setAttribute('height', 20);
+    container.removeChild(svgEl);
+    container.insertAdjacentHTML('afterbegin', projectSvg);
+    container.querySelector('svg').setAttribute('width', 20);
+    container.querySelector('svg').setAttribute('height', 20);
   };
 
-
   const setProjectOptionsButton = function(project) {
-    // const selectedProjectOption = getActiveProject('.project-option');
-    // console.log(selectedProjectOption);
     const btnPersProj = document.querySelector('.btn-pers-proj');
     const projectName = project.capitalizedProjectName;
     btnPersProj.querySelector('span').textContent = projectName;
     generateSvgProjectOptionsButton(btnPersProj, btnPersProj.querySelector('svg'), project)
-  }
+  };
 
   const selectedOption = function() {
     setProjectOptionsButton(getActiveProject('input.sidebar-project'));
-    // displayProjectOptionsButton(activeProject);
     const [activeOption] = [...document.querySelectorAll('input[type="radio"].project-option')].filter(input => input.value === activeProject.value);
     activeOption.checked = true;
   };
 
+  const selectMenuOption = function(option, btn, fn, fnArg) {
+    const btnMenu = btn;
+    if (option && option.checked) {
+      fn(fnArg);
+      btnMenu.checked = false;          
+    };
+  }
+
   const selectOption = function() {
     const checkedProject = e.target.closest('input[type="radio"].project-option');
     if (!checkedProject) return;
-    const selectedProject = getActiveProject('.project-option');
-    console.log(selectedProject);
-    const btnProjects = document.querySelector('input#btn-projects');
-    if (checkedProject && checkedProject.checked) {
-      setProjectOptionsButton(selectedProject);
-      // displayProjectOptionsButton(checkedProject);
-      btnProjects.checked = false;          
-    };
+    selectMenuOption(checkedProject, document.querySelector('input#btn-projects'), setProjectOptionsButton, getActiveProject('.project-option'));
   };
+
+  const setPriorityOptionsButton = function(svgOption) {
+    const svg = document.querySelector('svg.form-priority');
+    svg.setAttribute('fill', svgOption.getAttribute('fill'));
+    svg.setAttribute('stroke', svgOption.getAttribute('stroke'));
+  };
+
+  const selectPriority = function() {
+    const checkedPriority = e.target.closest('input[type="radio"].priority-option');
+    if (!checkedPriority) return;
+    selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setPriorityOptionsButton, checkedPriority.closest('li').querySelector('svg'));
+  };
+
+  const selectedPriority = function() {
+
+  }
 
   const selectProject = function() {
     document.querySelectorAll('label.sidebar-project').forEach(label => label.style.backgroundColor = 'var(--main-bg-color)');
     const projectInput = e.target.closest('input.sidebar-project');
     if (!projectInput) return;
-    console.log(projectInput);
     const projectLabel = projectInput.nextElementSibling;
     const svg = projectLabel.querySelector('svg');
     const displaySelectedProject = function() {
@@ -394,6 +401,7 @@ function display(e) {
   displayModifyTask.call(this);
   displayNewTask.call(this);
   selectOption.call(this);
+  selectPriority.call(this);
   selectProject.call(this);
   taskBtns.call(this);
 }

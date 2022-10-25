@@ -298,7 +298,7 @@ p.task-descr:hover {
   justify-content: flex-start;
 }
 
-.form-project-container {
+.form-project-container, .form-priority-container {
   position: relative;
 }
 
@@ -309,7 +309,7 @@ li.project-input {
   padding: 0; */
 }
 
-div.project-input {
+div.project-input, div.priority-input {
   display: none;
   position: absolute;
   top: 100%;
@@ -322,15 +322,19 @@ div.project-input {
   background-color: white;
 }
 
-.project-input .option {
+div.form-priority-container div.priority-input {
+  width: 400%;
+}
+
+.project-input .option, .priority-input .option {
   font-size: 0.8rem;
 }
 
-.project-input .option:hover {
+.project-input .option:hover, .priority-input .option:hover {
   background-color: rgb(245,245,245, 0.8);
 }
 
-.project-input label {
+.project-input label, .priority-input label {
   padding: 5px 7px;
 }
 
@@ -399,7 +403,7 @@ div.project-input {
   padding: 5px 7px;
 }
 
-label.btn-projects > *:not(.hidden), .project-input label {
+label.btn-projects > *:not(.hidden), .project-input label, .priority-input label {
   display: flex;
   align-items: center;
   gap: 3px;
@@ -409,7 +413,7 @@ input[type="checkbox"]:checked + .btn-wrapper label {
   background-color: lightgrey;
 }
 
-input[type="checkbox"]:checked ~ div.project-input {
+input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:checked ~ div.priority-input {
   display: block;
 }
 
