@@ -1,9 +1,6 @@
 import Project from './project';
 import Task from './task';
-import generateProjects from './sidebar';
-import generateTasks from './main-content';
-import generateProjectsList from './generate-projects-list';
-import generatePriorityList from './generate-priority-list';
+import {generateProjects, generateTasks, generateProjectsList, generatePriorityList } from './generate-html-lists';
 
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
@@ -14,6 +11,22 @@ function display(e) {
     return project;
   };
   const activeTask = activeProject.tasks;
+
+  const openDisplay = function(elToToggle, elToInsertTo, html) {
+    elToToggle.classList.toggle('hidden');
+    elToInsertTo.insertAdjacentHTML('beforeend', html);
+  };
+
+  const generateBtnLists = function(btnProjects, btnPriority) {
+    generateProjectsList.call(this, btnProjects);
+    selectedOption.call(this);
+    generatePriorityList.call(this, btnPriority);
+  };
+
+  const closeDisplay = function(elToToggle, elRemoveFrom, elToRemove) {
+    elToToggle.classList.toggle('hidden');
+    elRemoveFrom.removeChild(elToRemove);
+  };
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -165,17 +178,17 @@ function display(e) {
 </div>
       </form>`
     
-    const closeModifyForm = function() {
-      const form = document.querySelector('.modify');
-      const taskEl = form.previousElementSibling;
-      document.querySelector('.tasks-container').removeChild(form);
-      taskEl.classList.toggle('hidden');
-    }
+    // const closeModifyForm = function() {
+    //   const form = document.querySelector('.modify');
+    //   const taskEl = form.previousElementSibling;
+    //   document.querySelector('.tasks-container').removeChild(form);
+    //   taskEl.classList.toggle('hidden');
+    // };
 
     const cancelModifyForm = function() {
       const cancelBtn = e.target.closest('.modify button.cancel-new-task');
       if (!cancelBtn) return;
-      cancelBtn && closeModifyForm();
+      cancelBtn && closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
     };
 
     const clickOutsideModifyForm = function() {
@@ -183,7 +196,7 @@ function display(e) {
       const input = e.target.closest('input');
       const btn = e.target.closest('button');
       if (!form || (btn?.classList.contains('edit-task')) || input?.closest('.modify') || btn?.closest('.modify')) return;
-      if (input || btn) closeModifyForm();
+      if (input || btn) closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
     }
   
     const saveModifiedTask = function() {
@@ -195,7 +208,7 @@ function display(e) {
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.splice(taskIndex, 0, task));
       generateProjects.call(this);
-      closeModifyForm();
+      closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
       generateTasks.call(this);
     };
     
@@ -211,15 +224,12 @@ function display(e) {
   
     const displayFormModify = function() {
       const btnEdit = e.target.closest('.edit-task');
-      if (btnEdit) {
-        const task = btnEdit.closest('.task');
-        task.classList.toggle('hidden');
-        task.insertAdjacentHTML('afterend', htmlFormModify);
-        generateModifyTaskContent.call(this, task);
-        generateProjectsList.call(this, document.querySelector('.modify ul.project-input'));
-        selectedOption.call(this);
-        generatePriorityList.call(this, document.querySelector('.modify ul.priority-input'));
-      };
+      if (!btnEdit) return;
+      const task = btnEdit.closest('.task');
+      task.classList.toggle('hidden');
+      task.insertAdjacentHTML('afterend', htmlFormModify);
+      generateBtnLists.call(this, document.querySelector('.modify ul.project-input'), document.querySelector('.modify ul.priority-input'));
+      generateModifyTaskContent.call(this, task);
     };
     
     displayFormModify.call(this);
@@ -230,27 +240,18 @@ function display(e) {
   
   const displayNewTask = function() {
     const displayNewTaskModal = function() {
-      const addTask = e.target.closest('button.add-task');
-      if (!addTask) return;
-      backDrop.classList.toggle('hidden');
-      backDrop.insertAdjacentHTML('beforeend', htmlNewFormModal);
-      generateProjectsList.call(this, document.querySelector('.modal ul.project-input'));
-      selectedOption.call(this);
-      generatePriorityList.call(this, document.querySelector('ul.priority-input'));
-    };
-  
-    const closeModal = function() {
-      backDrop.classList.toggle('hidden');
-      backDrop.removeChild(document.querySelector('.modal'));
+      if (!e.target.closest('button.add-task')) return;
+      openDisplay(backDrop, backDrop, htmlNewFormModal);
+      generateBtnLists.call(this, document.querySelector('.modal ul.project-input'), document.querySelector('ul.priority-input'));
     };
   
     const cancelModal = function() {
       const btnProjects = document.querySelector('input#btn-projects');
       const outsideModal = e.target.closest('.backdrop');
       const cancelBtn = e.target.closest('.modal button.cancel-new-task');
-      cancelBtn && closeModal();
+      cancelBtn && closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
       if (!outsideModal || e.target.closest('.modal') || btnProjects.checked) return;
-      closeModal();
+      closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
     };
 
     function clickOutside() {
@@ -269,7 +270,7 @@ function display(e) {
       const { task, taskProject} = saveTaskTemplate(saveBtn);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
-      closeModal();
+      closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
       generateTasks.call(this);
     };
 
@@ -313,16 +314,15 @@ function display(e) {
   };
 
   const selectMenuOption = function(option, btn, fn, fnArg) {
-    const btnMenu = btn;
     if (option && option.checked) {
       fn(fnArg);
-      btnMenu.checked = false;          
+      btn.checked = false;          
     };
-  }
+  };
 
   const selectOption = function() {
     const checkedProject = e.target.closest('input[type="radio"].project-option');
-    if (!checkedProject) return;
+    if (!e.target.closest('input[type="radio"].project-option')) return;
     selectMenuOption(checkedProject, document.querySelector('input#btn-projects'), setProjectOptionsButton, getActiveProject('.project-option'));
   };
 

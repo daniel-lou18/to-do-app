@@ -1,7 +1,7 @@
 import Project, {PersonalProject} from './project';
 import Task from './task';
 import display from './display';
-import generateProjects from './sidebar';
+import { generateProjects } from './generate-html-lists';
 
 const App = class {
   projects = [];
