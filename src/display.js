@@ -2,6 +2,8 @@ import Project from './project';
 import Task from './task';
 import {generateProjects, generateTasks, generateProjectsList, generatePriorityList } from './generate-html-lists';
 
+let modifyFormDisplayed = false;
+
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
   const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
@@ -11,6 +13,7 @@ function display(e) {
     return project;
   };
   const activeTask = activeProject.tasks;
+
 
   const openDisplay = function(elToToggle, elToInsertTo, html) {
     elToToggle.classList.toggle('hidden');
@@ -26,6 +29,7 @@ function display(e) {
   const closeDisplay = function(elToToggle, elRemoveFrom, elToRemove) {
     elToToggle.classList.toggle('hidden');
     elRemoveFrom.removeChild(elToRemove);
+
   };
   
   const htmlNewFormModal = `
@@ -45,7 +49,7 @@ function display(e) {
   <span class="form-date">Échéance</span>
   </button>
   <div class="form-project-container form-container">
-<input type="checkbox" name="btn-projects" id="btn-projects">
+<input type="checkbox" class="btn-form" name="btn-projects" id="btn-projects">
 <div class="btn-wrapper form-project">
     <label class="btn-projects" for="btn-projects">
       <div class="btn-pers-proj">
@@ -56,7 +60,7 @@ function display(e) {
       </div>
     </label>
 </div>
-<div class="project-input">
+<div class="project-input options-container">
   <ul class="project-input list">
     <li class="project-input option inbox">
       <input class="project-option" type="radio" name="project-option" data-id= "${this.projects[0].id}" id="inbox" value="inbox" checked>
@@ -71,7 +75,7 @@ function display(e) {
 </div>
 </div>
 <div class="form-priority-container form-container">
-<input type="checkbox" name="btn-priority" id="btn-priority">
+<input type="checkbox" class="btn-form" name="btn-priority" id="btn-priority">
 <div class="btn-wrapper form-priority">
     <label class="btn-priority" for="btn-priority">
       <div class="btn-priority">
@@ -82,7 +86,7 @@ function display(e) {
       </div>
     </label>
 </div>
-<div class="priority-input">
+<div class="priority-input options-container">
   <ul class="priority-input list">
   </ul>
 </div>
@@ -102,6 +106,7 @@ function display(e) {
   };
 
   const saveTaskTemplate = function(btn) {
+    modifyFormDisplayed = false;
     e.preventDefault();
     const taskForm = btn.closest(`form.task-form`);
     const taskTextInput = taskForm.querySelector('input.form-text');
@@ -128,7 +133,7 @@ function display(e) {
     <span class="form-date">19 oct</span>
     </button>
     <div class="form-project-container form-container">
-    <input type="checkbox" name="btn-projects" id="btn-projects">
+    <input type="checkbox" class="btn-form" name="btn-projects" id="btn-projects">
     <div class="btn-wrapper form-project">
         <label class="btn-projects" for="btn-projects">
           <div class="btn-pers-proj">
@@ -139,7 +144,7 @@ function display(e) {
           </div>
         </label>
     </div>
-    <div class="project-input">
+    <div class="project-input options-container">
     <ul class="project-input list">
       <li class="project-input option inbox">
         <input class="project-option" type="radio" name="project-option" data-id= "${this.projects[0].id}" id="inbox" value="inbox" checked>
@@ -154,7 +159,7 @@ function display(e) {
 </div>
 </div>
   <div class="form-priority-container form-container">
-  <input type="checkbox" name="btn-priority" id="btn-priority">
+  <input type="checkbox" class="btn-form" name="btn-priority" id="btn-priority">
   <div class="btn-wrapper form-priority">
       <label class="btn-priority" for="btn-priority">
         <div class="btn-priority">
@@ -165,7 +170,7 @@ function display(e) {
         </div>
       </label>
   </div>
-  <div class="priority-input">
+  <div class="priority-input options-container">
     <ul class="priority-input list">
     </ul>
   </div>
@@ -178,26 +183,25 @@ function display(e) {
 </div>
       </form>`
     
-    // const closeModifyForm = function() {
-    //   const form = document.querySelector('.modify');
-    //   const taskEl = form.previousElementSibling;
-    //   document.querySelector('.tasks-container').removeChild(form);
-    //   taskEl.classList.toggle('hidden');
-    // };
-
     const cancelModifyForm = function() {
       const cancelBtn = e.target.closest('.modify button.cancel-new-task');
       if (!cancelBtn) return;
-      cancelBtn && closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
+      cancelBtn && closeDisplay(document.querySelector('.modify').previousElementSibling, cancelBtn.closest('.task-wrapper'), document.querySelector('.modify'));
+      modifyFormDisplayed = false;
     };
 
     const clickOutsideModifyForm = function() {
-      const form = document.querySelector('.modify');
-      const input = e.target.closest('input');
-      const btn = e.target.closest('button');
-      if (!form || (btn?.classList.contains('edit-task')) || input?.closest('.modify') || btn?.closest('.modify')) return;
-      if (input || btn) closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
-    }
+      const clickedForm = e.target.closest('.modify');
+      const modifyBtnOfTask = e.target.closest('.task-wrapper')?.querySelector('.task.hidden');
+      const anyModifyBtn = e.target.closest('button.edit-task');
+      const saveBtn = e.target.closest('.modify button.save-new-task');
+      const cancelBtn = e.target.closest('.modify button.cancel-new-task');
+      if (!modifyFormDisplayed || saveBtn || cancelBtn || clickedForm || modifyBtnOfTask) return;
+      console.log('wop')
+      closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.modify').closest('.task-wrapper'), document.querySelector('.modify'));
+      modifyFormDisplayed = false;
+      if (anyModifyBtn) displayFormModify.call(this);
+    };
   
     const saveModifiedTask = function() {
       const saveBtn = e.target.closest('.modify button.save-new-task');
@@ -208,7 +212,7 @@ function display(e) {
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.splice(taskIndex, 0, task));
       generateProjects.call(this);
-      closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.tasks-container'), document.querySelector('.modify'));
+      closeDisplay(taskEl, taskEl.closest('.task-wrapper'), document.querySelector('.modify'));
       generateTasks.call(this);
     };
     
@@ -224,18 +228,19 @@ function display(e) {
   
     const displayFormModify = function() {
       const btnEdit = e.target.closest('.edit-task');
-      if (!btnEdit) return;
+      if (!btnEdit || modifyFormDisplayed) return;
       const task = btnEdit.closest('.task');
       task.classList.toggle('hidden');
       task.insertAdjacentHTML('afterend', htmlFormModify);
       generateBtnLists.call(this, document.querySelector('.modify ul.project-input'), document.querySelector('.modify ul.priority-input'));
       generateModifyTaskContent.call(this, task);
+      modifyFormDisplayed = true;
     };
     
     displayFormModify.call(this);
     saveModifiedTask.call(this);
-    clickOutsideModifyForm();    
     cancelModifyForm();
+    clickOutsideModifyForm.call(this);    
   };
   
   const displayNewTask = function() {
@@ -246,23 +251,31 @@ function display(e) {
     };
   
     const cancelModal = function() {
-      const btnProjects = document.querySelector('input#btn-projects');
+      const [checkedFormBtn] = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
       const outsideModal = e.target.closest('.backdrop');
       const cancelBtn = e.target.closest('.modal button.cancel-new-task');
       cancelBtn && closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
-      if (!outsideModal || e.target.closest('.modal') || btnProjects.checked) return;
+      if (!outsideModal || e.target.closest('.modal') || checkedFormBtn) return;
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
     };
 
     function clickOutside() {
       const backdrop = e.target.closest('.backdrop');
-      const projectsContainer = e.target.closest('.form-project-container');
-      if (projectsContainer || !backdrop) return;
-      const btnProjects = document.querySelector('input#btn-projects');
-      if (btnProjects && btnProjects.checked && !projectsContainer) {
-        btnProjects.checked = false;
+      const formContainer = e.target.closest('.form-container');
+      if (formContainer || !backdrop) return;
+      const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
+      if (checkedFormBtn || !formContainer) {
+        checkedFormBtn.forEach(btn => btn.checked = false);
       };
     };
+
+    const checkMultipleDropdown = function() {
+      const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
+      if (checkedFormBtn.length > 1) checkedFormBtn.forEach(btn => btn.checked = false);
+      const formBtn = e.target.closest('input.btn-form');
+      if (!formBtn) return;
+      formBtn.checked = true;
+    }
 
     const saveTask = function() {
       const saveBtn = e.target.closest('.modal button.save-new-task');
@@ -278,6 +291,7 @@ function display(e) {
     cancelModal();
     saveTask.call(this);
     clickOutside.call(this);
+    checkMultipleDropdown();
       
       const displayFormDate = function() {
         const btnDate = e.target.closest('button.form-date');
