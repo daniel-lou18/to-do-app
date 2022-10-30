@@ -43,7 +43,7 @@ const generateTasks = function() {
         <input class="task-check" type="checkbox" id="check-${index}">
         <label class="task-label" for="check-${index}">
           <span class="custom-checkbox">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="dodgerblue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill=${task._priorityColorName} stroke=${task._priorityColorName} stroke-width="3" stroke-linecap="square" stroke-linejoin="sqaure" class="feather feather-check"><polyline points="20 6 9 17 4 12"/></svg>
           </span>
           <span class="task-text">${task._taskName}</span>
         </label>
@@ -83,7 +83,7 @@ function generateProjectsList(element) {
       <li class="project-input option personal" data-id=${project.id}>
         <input class="project-option"type="radio" name="project-option" data-id = "${project.id}" id="project-${index}" value=${project._projectName}>
         <label for="project-${index}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill=${project._color} stroke=${project._color} class="feather feather-circle">
             <circle cx="12" cy="12" r="5"/>
           </svg>
           <span class="project-input option">${project._projectName[0].toUpperCase()}${project._projectName.slice(1).toLowerCase()}</span>
@@ -103,19 +103,19 @@ function generatePriorityList(element) {
       <li class="priority-input option priority-item" data-id="">
         <input class="priority-option" type="radio" name="priority-option" data-id = "" id="priority-${i}" value="${i}">
         <label for="priority-${i}">
-          <svg class="priority-option xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+          <svg class="priority-option xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="crimson" stroke="crimson" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
           </svg>
           <span class="priority-input option">Priority ${i}</span>
         </label>
       </li>
       `;
-    if (i === 2) html = html.replaceAll("red", "orange");
-    if (i === 3) html = html.replaceAll("red", "blue");
+    if (i === 2) html = html.replaceAll("crimson", "darkorange");
+    if (i === 3) html = html.replaceAll("crimson", "cornflowerblue");
     if (i === 4) {
       html = html
-        .replace('fill="red"', 'fill="none"')
-        .replace('stroke="red"', 'stroke="black"');
+        .replace('fill="crimson"', 'fill="none"')
+        .replace('stroke="crimson"', 'stroke="black"');
     };
 
     projectList.insertAdjacentHTML('beforeend', html);

@@ -320,6 +320,7 @@ div.project-input, div.priority-input {
   border-radius: var(--main-bd-radius);
   padding: 0;
   background-color: white;
+  z-index: 5; 
 }
 
 div.form-priority-container div.priority-input {

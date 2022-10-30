@@ -7,30 +7,38 @@ let modifyFormDisplayed = false;
 function display(e) {
   const backDrop = document.querySelector('.backdrop');
   const [activeProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
-  const getActiveProject = (selector) => {
-    const [activeProject] = [...document.querySelectorAll(selector)].filter(input => input.checked);
+  const getActiveProject = (projectElSelector) => {
+    const [activeProject] = [...document.querySelectorAll(projectElSelector)].filter(input => input.checked);
     const [project] = this.projects.filter(project => project.id === activeProject.dataset.id);
     return project;
   };
-  const activeTask = activeProject.tasks;
 
 
-  const openDisplay = function(elToToggle, elToInsertTo, html) {
+  const openDisplay = function(elToToggle, elToInsertTo, insertPosition, html) {
     elToToggle.classList.toggle('hidden');
-    elToInsertTo.insertAdjacentHTML('beforeend', html);
+    elToInsertTo.insertAdjacentHTML(insertPosition, html);
   };
 
   const generateBtnLists = function(btnProjects, btnPriority) {
     generateProjectsList.call(this, btnProjects);
-    selectedOption.call(this);
+    selectProjectBtn().selectedOption.call(this);
     generatePriorityList.call(this, btnPriority);
   };
 
   const closeDisplay = function(elToToggle, elRemoveFrom, elToRemove) {
     elToToggle.classList.toggle('hidden');
     elRemoveFrom.removeChild(elToRemove);
-
   };
+
+  const setCircleCheckboxTask = function() {
+    const allCircleSpans = document.querySelectorAll('span.custom-checkbox');
+    const allTasks = getActiveProject('input.sidebar-project').tasks;
+    console.log(allTasks);
+    allCircleSpans.forEach((span, i) => {
+      span.style.borderColor = allTasks[i]._priorityColor;
+      span.style.backgroundColor = allTasks[i]._priorityBackgroundColor;
+    });
+  }
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -75,11 +83,11 @@ function display(e) {
 </div>
 </div>
 <div class="form-priority-container form-container">
-<input type="checkbox" class="btn-form" name="btn-priority" id="btn-priority">
+<input type="checkbox" class="btn-form" data-id="" name="btn-priority" id="btn-priority">
 <div class="btn-wrapper form-priority">
     <label class="btn-priority" for="btn-priority">
       <div class="btn-priority">
-        <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+        <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="crimson" stroke="crimson" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
         </svg>
         <span class="form-priority"></span>
@@ -105,14 +113,16 @@ function display(e) {
     return [projectIndex, taskIndex];
   };
 
-  const saveTaskTemplate = function(btn) {
+  const saveTaskInput = function(btn) {
     modifyFormDisplayed = false;
     e.preventDefault();
     const taskForm = btn.closest(`form.task-form`);
     const taskTextInput = taskForm.querySelector('input.form-text');
     const taskDescrInput = taskForm.querySelector('textarea.form-descr');
     const [taskProject] = [...taskForm.querySelectorAll('li.project-input input')].filter(input => input.checked);
-    const task = new Task(taskTextInput.value, taskDescrInput.value, 0, taskProject.value);
+    const [taskPriority] = [...taskForm.querySelectorAll('li.priority-input input')].filter(input => input.checked);
+    const task = new Task(taskTextInput.value, taskDescrInput.value, 0, taskProject.value, +taskPriority.value);
+    console.log(task);
     return { task, taskProject };
   };
 
@@ -163,7 +173,7 @@ function display(e) {
   <div class="btn-wrapper form-priority">
       <label class="btn-priority" for="btn-priority">
         <div class="btn-priority">
-          <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+          <svg class="form-priority xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="crimson" stroke="crimson" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
           </svg>
           <span class="form-priority"></span>
@@ -206,7 +216,7 @@ function display(e) {
     const saveModifiedTask = function() {
       const saveBtn = e.target.closest('.modify button.save-new-task');
       if (!saveBtn) return;
-      const { task, taskProject} = saveTaskTemplate(saveBtn);
+      const { task, taskProject} = saveTaskInput(saveBtn);
       const taskEl = saveBtn.closest('.modify').previousElementSibling;
       const [projectIndex, taskIndex] = findTask.call(this, taskEl);
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
@@ -214,6 +224,7 @@ function display(e) {
       generateProjects.call(this);
       closeDisplay(taskEl, taskEl.closest('.task-wrapper'), document.querySelector('.modify'));
       generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
     };
     
     const generateModifyTaskContent = function(elem) {
@@ -230,9 +241,9 @@ function display(e) {
       const btnEdit = e.target.closest('.edit-task');
       if (!btnEdit || modifyFormDisplayed) return;
       const task = btnEdit.closest('.task');
-      task.classList.toggle('hidden');
-      task.insertAdjacentHTML('afterend', htmlFormModify);
+      openDisplay(task, task, 'afterend', htmlFormModify);
       generateBtnLists.call(this, document.querySelector('.modify ul.project-input'), document.querySelector('.modify ul.priority-input'));
+      selectedPriorityModify.call(this);
       generateModifyTaskContent.call(this, task);
       modifyFormDisplayed = true;
     };
@@ -246,8 +257,9 @@ function display(e) {
   const displayNewTask = function() {
     const displayNewTaskModal = function() {
       if (!e.target.closest('button.add-task')) return;
-      openDisplay(backDrop, backDrop, htmlNewFormModal);
+      openDisplay(backDrop, backDrop, 'beforeend', htmlNewFormModal);
       generateBtnLists.call(this, document.querySelector('.modal ul.project-input'), document.querySelector('ul.priority-input'));
+      selectedPriorityModal();
     };
   
     const cancelModal = function() {
@@ -269,29 +281,21 @@ function display(e) {
       };
     };
 
-    const checkMultipleDropdown = function() {
-      const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
-      if (checkedFormBtn.length > 1) checkedFormBtn.forEach(btn => btn.checked = false);
-      const formBtn = e.target.closest('input.btn-form');
-      if (!formBtn) return;
-      formBtn.checked = true;
-    }
-
     const saveTask = function() {
       const saveBtn = e.target.closest('.modal button.save-new-task');
-      if (!saveBtn) return;
-      const { task, taskProject} = saveTaskTemplate(saveBtn);
+      if (!e.target.closest('.modal button.save-new-task')) return;
+      const { task, taskProject} = saveTaskInput(saveBtn);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
       generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
     };
 
     displayNewTaskModal.call(this);
     cancelModal();
     saveTask.call(this);
     clickOutside.call(this);
-    checkMultipleDropdown();
       
       const displayFormDate = function() {
         const btnDate = e.target.closest('button.form-date');
@@ -305,28 +309,7 @@ function display(e) {
         console.log(btnPriority);
       };
   };
-
-  const generateSvgProjectOptionsButton = function(container, svgEl, project) {
-    const projectSvg = project._svg;
-    container.removeChild(svgEl);
-    container.insertAdjacentHTML('afterbegin', projectSvg);
-    container.querySelector('svg').setAttribute('width', 20);
-    container.querySelector('svg').setAttribute('height', 20);
-  };
-
-  const setProjectOptionsButton = function(project) {
-    const btnPersProj = document.querySelector('.btn-pers-proj');
-    const projectName = project.capitalizedProjectName;
-    btnPersProj.querySelector('span').textContent = projectName;
-    generateSvgProjectOptionsButton(btnPersProj, btnPersProj.querySelector('svg'), project)
-  };
-
-  const selectedOption = function() {
-    setProjectOptionsButton(getActiveProject('input.sidebar-project'));
-    const [activeOption] = [...document.querySelectorAll('input[type="radio"].project-option')].filter(input => input.value === activeProject.value);
-    activeOption.checked = true;
-  };
-
+  
   const selectMenuOption = function(option, btn, fn, fnArg) {
     if (option && option.checked) {
       fn(fnArg);
@@ -334,10 +317,35 @@ function display(e) {
     };
   };
 
-  const selectOption = function() {
-    const checkedProject = e.target.closest('input[type="radio"].project-option');
-    if (!e.target.closest('input[type="radio"].project-option')) return;
-    selectMenuOption(checkedProject, document.querySelector('input#btn-projects'), setProjectOptionsButton, getActiveProject('.project-option'));
+  const selectProjectBtn = function() {
+    const generateSvgProjectOptionsButton = function(container, svgEl, project) {
+      const projectSvg = project._svg;
+      container.removeChild(svgEl);
+      container.insertAdjacentHTML('afterbegin', projectSvg);
+      container.querySelector('svg').setAttribute('width', 20);
+      container.querySelector('svg').setAttribute('height', 20);
+    };
+
+    const setProjectOptionsButton = function(project) {
+      const btnPersProj = document.querySelector('.btn-pers-proj');
+      const projectName = project.capitalizedProjectName;
+      btnPersProj.querySelector('span').textContent = projectName;
+      generateSvgProjectOptionsButton(btnPersProj, btnPersProj.querySelector('svg'), project)
+    };
+
+    const selectedOption = function() {
+      setProjectOptionsButton(getActiveProject('input.sidebar-project'));
+      const [activeOption] = [...document.querySelectorAll('input[type="radio"].project-option')].filter(input => input.value === activeProject.value);
+      activeOption.checked = true;
+    };
+
+    const selectOption = function() {
+      const checkedProject = e.target.closest('input[type="radio"].project-option');
+      if (!e.target.closest('input[type="radio"].project-option')) return;
+      selectMenuOption(checkedProject, document.querySelector('input#btn-projects'), setProjectOptionsButton, getActiveProject('.project-option'));
+    };
+
+    return {selectedOption, selectOption};
   };
 
   const setPriorityOptionsButton = function(svgOption) {
@@ -346,15 +354,41 @@ function display(e) {
     svg.setAttribute('stroke', svgOption.getAttribute('stroke'));
   };
 
+  const selectedPriorityModify = function() {
+    const svg = document.querySelector('svg.form-priority');
+    const [projectIndex, taskIndex] = findTask.call(this, document.querySelector('.modify').previousElementSibling);
+    const priority = this.projects[projectIndex].tasks[taskIndex]._priority;
+    switch (priority) {
+      case 1:
+        svg.setAttribute('fill', 'crimson');
+        svg.setAttribute('stroke', 'crimson');
+        break;
+      case 2:
+        svg.setAttribute('fill', 'darkorange');
+        svg.setAttribute('stroke', 'darkorange');
+        break;
+      case 3:
+        svg.setAttribute('fill', 'cornflowerblue');
+        svg.setAttribute('stroke', 'cornflowerblue');
+        break;
+      case 4:
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'black');
+        break;
+    }
+    const [activeOption] = [...document.querySelectorAll('input[type="radio"].priority-option')].filter(input => +input.value === priority);
+    activeOption.checked = true;
+  };
+
+  function selectedPriorityModal() {
+    document.querySelector('input#priority-1').checked = true;
+  }
+
   const selectPriority = function() {
     const checkedPriority = e.target.closest('input[type="radio"].priority-option');
     if (!checkedPriority) return;
     selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setPriorityOptionsButton, checkedPriority.closest('li').querySelector('svg'));
   };
-
-  const selectedPriority = function() {
-
-  }
 
   const selectProject = function() {
     document.querySelectorAll('label.sidebar-project').forEach(label => label.style.backgroundColor = 'var(--main-bg-color)');
@@ -383,7 +417,18 @@ function display(e) {
       projectLabel.style.backgroundColor = 'var(--main-hv-color)';
       displaySelectedProject();
       generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
     };
+  };
+
+  const checkMultipleDropdown = function() {
+    const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
+    if (checkedFormBtn.length > 1) {
+      checkedFormBtn.forEach(btn => btn.checked = false);
+      const formBtn = e.target.closest('input.btn-form');
+      if (!formBtn) return;
+      formBtn.checked = true;
+    }
   };
 
   const taskBtns = function() {
@@ -395,6 +440,7 @@ function display(e) {
       const [clickedTask] = this.projects[projectIndex].tasks.splice(taskIndex, 1);
       btn.classList.contains('move-up') ? this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask) : this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
       generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
     };
 
     const deleteTask = function() {
@@ -404,6 +450,7 @@ function display(e) {
       const [projectIndex, taskIndex] = findTask.call(this, taskEl);
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
       generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
       generateProjects.call(this);
     };
 
@@ -414,8 +461,9 @@ function display(e) {
   
   displayModifyTask.call(this);
   displayNewTask.call(this);
-  selectOption.call(this);
+  selectProjectBtn().selectOption.call(this);
   selectPriority.call(this);
+  checkMultipleDropdown();
   selectProject.call(this);
   taskBtns.call(this);
 }
