@@ -38,7 +38,7 @@ function display(e) {
       span.style.borderColor = allTasks[i]._priorityColor;
       span.style.backgroundColor = allTasks[i]._priorityBackgroundColor;
     });
-  }
+  };
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -390,13 +390,13 @@ function display(e) {
     selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setPriorityOptionsButton, checkedPriority.closest('li').querySelector('svg'));
   };
 
-  const selectProject = function() {
-    document.querySelectorAll('label.sidebar-project').forEach(label => label.style.backgroundColor = 'var(--main-bg-color)');
+  const selectProject = function() {    
     const projectInput = e.target.closest('input.sidebar-project');
     if (!projectInput) return;
     const projectLabel = projectInput.nextElementSibling;
     const svg = projectLabel.querySelector('svg');
-    const displaySelectedProject = function() {
+    
+    function displaySelectedProject() {
       const container = document.querySelector('.list-title-container');
       let textInput = document.querySelector('input.list-title');
       let colorInput = document.querySelector('.list-dot');
@@ -414,7 +414,6 @@ function display(e) {
     };
 
     if (projectInput.checked) {
-      projectLabel.style.backgroundColor = 'var(--main-hv-color)';
       displaySelectedProject();
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
@@ -466,6 +465,6 @@ function display(e) {
   checkMultipleDropdown();
   selectProject.call(this);
   taskBtns.call(this);
-}
+};
 
 export default display;

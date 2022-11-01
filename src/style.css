@@ -9,8 +9,8 @@
 :root {
   --main-hd-color: rgb(255, 99, 71);
   --main-hd-color-hover: rgb(200, 99, 71);
-  --main-bg-color: rgb(245,245,245, 0.5);
-  --main-hv-color: rgb(230,230,230);
+  --main-bg-color: rgb(250,250,250);
+  --main-hv-color: rgb(222, 184, 135, 0.1);
   --btn-bg-color: rgb(255,218,185);
   --btn-bg-color-hover: rgb(239, 204, 174);
   --main-bd-color: rgb(128, 128, 128, 0.5);
@@ -74,7 +74,17 @@ span.text-italic {
   background-color: var(--main-bg-color);
 }
 
-.project {
+.projects-container label:hover {
+  background-color: var(--main-hv-color);
+  cursor: pointer;
+}
+
+.projects-container li:has(input:checked) {
+  background-color: rgb(222, 184, 135, 0.4);
+  border-radius: 5px;
+}
+
+.project, .title-projects-container {
   display: grid;
   grid-template-columns: 24px 1fr 30px;
   align-items: center;
@@ -84,17 +94,17 @@ span.text-italic {
   border-radius: 5px;
 }
 
-li.project:hover, svg.cross:hover {
+svg.cross:hover {
   background-color: var(--main-hv-color);
   cursor: pointer;
 }
 
-div.project button.add {
+.title-projects-container button.add {
   padding-right: 17px;
 
 }
 
-.count, .project button:last-child {
+.count, .title-projects-container button:last-child {
   justify-self: end;
   padding-right: 10px;
   padding-right: 25px;
@@ -418,6 +428,31 @@ input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:check
   display: block;
 }
 
-input[type="radio"]:checked + .btn-wrapper label {
-  
+.btn-svg-bottom.add-task-bottom {
+  display: flex;
+  opacity: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: grey;
+}
+
+.btn-svg-bottom.add-task-bottom:hover span {
+  color: var(--main-hd-color);
+  cursor: pointer;
+}
+
+.svg-wrapper.add-task-bottom {
+  color: var(--main-hd-color);
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+}
+
+.svg-wrapper.add-task-bottom:hover {
+  color: white;
+  background-color: var(--main-hd-color);
 }
