@@ -32,7 +32,7 @@ body {
   display: grid;
   align-content: start;
   grid-template-columns: 325px 1fr;
-  grid-template-rows: 50px calc(100vh - 50px);
+  grid-template-rows: 55px calc(100vh - 50px);
   height: 100vh;
 }
 
@@ -65,9 +65,44 @@ span.text-italic {
   color: white;
 }
 
-.todo-container {
+.todo-container, .header-btn-container {
   padding-left: 12%;
   padding-right: 12%;
+}
+
+.header-container-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.header-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header-btn-container button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  background: none;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.header-btn-container button:hover {
+  background: rgb(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.header-btn-container button div {
+  height: 30px;
+  width: 30px;
 }
 
 .projects-container {
@@ -180,7 +215,7 @@ input.list-title {
   align-items: center;
   padding-top: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid lightgrey;
+  border-bottom: 1px solid rgb(211, 211, 211, 0.4);
 }
 
 .todo-header:hover, .todo-body:hover {
@@ -194,12 +229,11 @@ input.list-title {
 }
 
 .custom-checkbox {
-  --check: 18px;
+  --check: 20px;
   display: inline-block;
   height: var(--check);
   width: var(--check);
   margin-right: 12px;
-  padding-left: 1px;
   border: 2px solid rgb(30, 144, 255);
   background-color: rgb(30, 144, 255, 0.2);
   border-radius: 50%;
@@ -428,6 +462,10 @@ input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:check
   display: block;
 }
 
+.todo-bottom {
+  margin-top: 5px;
+}
+
 .btn-svg-bottom.add-task-bottom {
   display: flex;
   opacity: 1;
@@ -440,19 +478,29 @@ input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:check
   color: grey;
 }
 
+.btn-svg-bottom.add-task-bottom span {
+  display: inline-block;
+  padding-top: 4px;
+}
+
 .btn-svg-bottom.add-task-bottom:hover span {
   color: var(--main-hd-color);
   cursor: pointer;
 }
 
 .svg-wrapper.add-task-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 12px;
+
   color: var(--main-hd-color);
-  height: 28px;
-  width: 28px;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
 }
 
-.svg-wrapper.add-task-bottom:hover {
+.btn-svg-bottom.add-task-bottom:hover .svg-wrapper{
   color: white;
   background-color: var(--main-hd-color);
 }

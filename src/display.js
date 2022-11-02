@@ -15,7 +15,7 @@ function display(e) {
 
 
   const openDisplay = function(elToToggle, elToInsertTo, insertPosition, html) {
-    elToToggle.classList.toggle('hidden');
+    elToToggle?.classList.toggle('hidden');
     elToInsertTo.insertAdjacentHTML(insertPosition, html);
   };
 
@@ -26,7 +26,7 @@ function display(e) {
   };
 
   const closeDisplay = function(elToToggle, elRemoveFrom, elToRemove) {
-    elToToggle.classList.toggle('hidden');
+    elToToggle?.classList.toggle('hidden');
     elRemoveFrom.removeChild(elToRemove);
   };
 
@@ -130,10 +130,10 @@ function display(e) {
     const htmlFormModify = `<form class="task-form modify" id="task-modify">
     <div class="form-main">
     <div class="form-text">
-    <input class="form-text" type="text" name="task-text" id="task-modify" value="Pommes" autofocus placeholder= "Tâche">
+    <input class="form-text" type="text" name="task-text" id="task-modify" value="Task" autofocus placeholder= "Tâche">
     </div>
     <div class="form-descr">
-    <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder= "Description">à l'épicerie paysanne</textarea>
+    <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder= "Description">Descr</textarea>
     </div>
     <div class="form-params">
     <button type="button" class="form-date">
@@ -236,22 +236,26 @@ function display(e) {
       taskName.value = activeTask._taskName;
       taskDescr.value = activeTask._descr;
     };
+
+    const displayFormModifyGeneric = function(task) {
+        openDisplay(task, task, 'afterend', htmlFormModify);
+        generateBtnLists.call(this, document.querySelector('.modify ul.project-input'), document.querySelector('.modify ul.priority-input'));
+        selectedPriorityModify.call(this);
+        generateModifyTaskContent.call(this, task);
+        modifyFormDisplayed = true;
+      };
   
     const displayFormModify = function() {
       const btnEdit = e.target.closest('.edit-task');
       if (!btnEdit || modifyFormDisplayed) return;
       const task = btnEdit.closest('.task');
-      openDisplay(task, task, 'afterend', htmlFormModify);
-      generateBtnLists.call(this, document.querySelector('.modify ul.project-input'), document.querySelector('.modify ul.priority-input'));
-      selectedPriorityModify.call(this);
-      generateModifyTaskContent.call(this, task);
-      modifyFormDisplayed = true;
+      displayFormModifyGeneric.call(this, task);
     };
     
     displayFormModify.call(this);
     saveModifiedTask.call(this);
     cancelModifyForm();
-    clickOutsideModifyForm.call(this);    
+    clickOutsideModifyForm.call(this);
   };
   
   const displayNewTask = function() {
@@ -357,6 +361,7 @@ function display(e) {
   const selectedPriorityModify = function() {
     const svg = document.querySelector('svg.form-priority');
     const [projectIndex, taskIndex] = findTask.call(this, document.querySelector('.modify').previousElementSibling);
+    console.log(projectIndex, taskIndex);
     const priority = this.projects[projectIndex].tasks[taskIndex]._priority;
     switch (priority) {
       case 1:

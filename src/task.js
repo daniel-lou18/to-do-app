@@ -1,7 +1,7 @@
 const Task = class {
   date = new Date();
-  constructor(taskName, descr, deadline, project, priority) {
-    this.id = taskName.slice(-5) + (Date.now() + '').slice(-10);
+  constructor(taskName="Task", descr="Description", deadline, project, priority=4) {
+    this.id = taskName.replace(/\s/g, '' ).slice(-5) + (Date.now() + '').slice(-10);
     this._taskName = taskName;
     this._descr = descr;
     this._deadline = deadline;
