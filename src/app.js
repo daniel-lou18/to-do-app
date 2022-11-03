@@ -23,10 +23,18 @@ const App = class {
     travaux.tasks.push(task1);
     const task2 = new Task('Déboucher l\'évier', 'acheter du produit', 0, 'travaux', 3);
     travaux.tasks.push(task2);
-    const task3 = new Task('Arroser les plantes', 'Ne pas oublier l\'aloë vera', 0, 'travaux', 2);
+    const task3 = new Task('Arroser les plantes', 'Ne pas oublier l\'aloë vera', 0, 'inbox', 3);
     inbox.tasks.push(task3);
-    const task4 = new Task('Prendre rdv chez le garagiste', 'Garage Vroum à Meudon, tél 06 55 55 55', 0, 'travaux', 1);
+    const task4 = new Task('Prendre rdv chez le garagiste', 'Garage Vroum à Meudon, tél 06 55 55 55', 0, 'inbox', 1);
     inbox.tasks.push(task4);
+    const task5 = new Task('Aller chercher les enfants à l\'école',
+     `Eventuellement demander à grand-mère
+sinon demander à Yuko
+nooooooooo!!!`, 
+     0, 'inbox', 2);
+    inbox.tasks.push(task5);
+    const task6 = new Task('Réparer la douche', 'Quincaillerie rue Damrémont', 0, 'inbox', 3);
+    inbox.tasks.push(task6);
   }
 };
 

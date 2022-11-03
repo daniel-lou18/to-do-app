@@ -17,6 +17,15 @@ const Task = class {
     console.log('New Task created')
   }
 
+  shortenTaskDescr() {
+    if (this._descr.length > 50) {
+      return this._descr
+              .replace(/[\r\n]/gm, ' ')
+              .slice(0, 50)
+              + "...";
+    } else return this._descr;
+  }
+
   setPriorityColor() {
     if (this._priority === 1) this._priorityColor = 'rgb(220, 20, 60)';
     if (this._priority === 2) this._priorityColor = 'rgb(255, 140, 0)';

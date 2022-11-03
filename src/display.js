@@ -39,15 +39,20 @@ function display(e) {
       span.style.backgroundColor = allTasks[i]._priorityBackgroundColor;
     });
   };
+
+  const resetStrikeThrough = function() {
+    document.querySelectorAll('input.task-check').forEach(task => task.checked = false);
+    document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
+  }
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
   <div class="form-main">
   <div class="form-text">
-  <input class="form-text" type="text" name="task-text" id="task-1" autofocus placeholder="Tâche">
+  <input class="form-text" type="text" name="task-text" id="task-1" autofocus placeholder="Tâche" minlength="1" maxlength="60">
   </div>
   <div class="form-descr">
-  <textarea class="form-descr" name="descr-1" id="descr-1" cols="30" rows="4" placeholder="Description"></textarea>
+  <textarea class="form-descr" name="descr-1" id="descr-1" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
   </div>
   <div class="form-params">
   <button type="button" class="form-date">
@@ -130,10 +135,10 @@ function display(e) {
     const htmlFormModify = `<form class="task-form modify" id="task-modify">
     <div class="form-main">
     <div class="form-text">
-    <input class="form-text" type="text" name="task-text" id="task-modify" value="Task" autofocus placeholder= "Tâche">
+    <input class="form-text" type="text" name="task-text" id="task-modify" autofocus placeholder="Tâche" minlength="1" maxlength="60">
     </div>
     <div class="form-descr">
-    <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder= "Description">Descr</textarea>
+    <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
     </div>
     <div class="form-params">
     <button type="button" class="form-date">
@@ -243,6 +248,7 @@ function display(e) {
         selectedPriorityModify.call(this);
         generateModifyTaskContent.call(this, task);
         modifyFormDisplayed = true;
+        resetStrikeThrough();
       };
   
     const displayFormModify = function() {
@@ -264,6 +270,7 @@ function display(e) {
       openDisplay(backDrop, backDrop, 'beforeend', htmlNewFormModal);
       generateBtnLists.call(this, document.querySelector('.modal ul.project-input'), document.querySelector('ul.priority-input'));
       selectedPriorityModal();
+      resetStrikeThrough();
     };
   
     const cancelModal = function() {
@@ -294,6 +301,7 @@ function display(e) {
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
     };
 
     displayNewTaskModal.call(this);
@@ -422,6 +430,7 @@ function display(e) {
       displaySelectedProject();
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      resetStrikeThrough();
     };
   };
 
@@ -435,7 +444,7 @@ function display(e) {
     }
   };
 
-  const taskBtns = function() {
+  const taskActions = function() {
     const moveTask = function() {
       const btn = e.target.closest('button.move');
       if (!btn) return;
@@ -445,6 +454,7 @@ function display(e) {
       btn.classList.contains('move-up') ? this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask) : this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      resetStrikeThrough();
     };
 
     const deleteTask = function() {
@@ -456,10 +466,39 @@ function display(e) {
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
       generateProjects.call(this);
+      resetStrikeThrough();
     };
+
+    const displayDeleteStrikethrough = function() {
+      const task = e.target.closest('.task-check');
+      if(!task) return;
+      const delCheckedBtn = document.querySelector('button.del-checked-task');
+      const checkTasksArray = [...document.querySelectorAll('.task-check')].filter(task => task.checked);
+      const delCheckedBtnLetterS = document.querySelector('span.letter-s');
+      checkTasksArray.length > 0 ? delCheckedBtn.parentElement.classList.remove('transparent') : delCheckedBtn.parentElement.classList.add('transparent');
+      checkTasksArray.length > 1 ? delCheckedBtnLetterS.classList.remove('transparent') : delCheckedBtnLetterS.classList.add('transparent');
+    };
+
+    const clickonDeleteStrikethrough = function() {
+      const delCheckedBtn = e.target.closest('button.del-checked-task');
+      if (!delCheckedBtn) return;
+      [...document.querySelectorAll('.task-check')]
+        .filter(task => task.checked)
+        .map(task => findTask.call(this, task))
+        .forEach((iArray, i) => {
+          this.projects[iArray[0]].tasks.splice(iArray[1] - i, 1)
+          console.log(iArray);
+        });
+      generateTasks.call(this);
+      setCircleCheckboxTask.call(this);
+      generateProjects.call(this);
+      resetStrikeThrough();
+    }
 
     moveTask.call(this);
     deleteTask.call(this);
+    displayDeleteStrikethrough.call(this);
+    clickonDeleteStrikethrough.call(this);
   }
 
   
@@ -469,7 +508,7 @@ function display(e) {
   selectPriority.call(this);
   checkMultipleDropdown();
   selectProject.call(this);
-  taskBtns.call(this);
+  taskActions.call(this);
 };
 
 export default display;
