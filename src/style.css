@@ -266,6 +266,7 @@ input.list-title {
 
 .task .task-check + label span.task-text {
   position: relative;
+  padding-top: 2px;
 }
 
 .task .task-check:checked + label span.task-text:after {
@@ -273,7 +274,7 @@ input.list-title {
   position: absolute;
   left: 0;
   right: 0;
-  top: 49%;
+  top: 50%;
   height: 2px;
   background: rgb(70, 70, 70, 0.6);
 }
@@ -304,17 +305,38 @@ input.list-title {
   font-size: 0.9rem;
 }
 
+.description-container {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 21px;
+  margin-left: 32px;
+  border-radius: var(--main-bd-radius);
+}
+
+.description-container.expand:hover {
+  outline-offset: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.description-container svg {
+  opacity: 0;
+}
+
+.description-container.expand:hover svg {
+  color: rgb(150,150,150);
+  opacity: 0.6;
+}
+
 p.task-descr {
+  width: 100%;
   justify-self: start;
   font-size: 0.8rem;
   color: grey;
-  margin-left: 32px;
 }
 
-p.task-descr:hover {
-  color: black;
+.full-descr {
+  grid-template-rows: 25px auto 20px;
 }
-
 
 .calendar-container {
   grid-row: 3 / 4;
@@ -332,6 +354,16 @@ p.task-descr:hover {
   padding: 8px 8px;
   border: 1px solid rgb(200, 200, 200, 0.5);
   border-radius: 8px;
+}
+
+.modify .form-main:has(input:focus), .modify .form-main:has(textarea:focus), .modify .form-main:has(input.btn-form:hover), .modify .form-main:has(input.btn-form:checked) {
+  border: 1px solid var(--main-hd-color);
+  box-shadow: 0 0 3px 4px rgb(255, 99, 71, 0.3);
+}
+
+.focus {
+  border: 1px solid var(--main-hd-color);
+  box-shadow: 0 0 3px 4px rgb(255, 99, 71, 0.3);
 }
 
 .form-text {

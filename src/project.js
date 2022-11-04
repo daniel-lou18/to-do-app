@@ -2,8 +2,8 @@ const Project = class {
   date = new Date();
   tasks = [];
   constructor(projectName, color, svg) {
-    this.id = projectName + '-' + (Date.now() + '').slice(-10);
     this._projectName = projectName;
+    this.id = projectName + '-' + (Date.now() + '').slice(-10);
     this._color = color;
     this._svg = svg;
     this.message();

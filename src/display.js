@@ -13,7 +13,6 @@ function display(e) {
     return project;
   };
 
-
   const openDisplay = function(elToToggle, elToInsertTo, insertPosition, html) {
     elToToggle?.classList.toggle('hidden');
     elToInsertTo.insertAdjacentHTML(insertPosition, html);
@@ -40,10 +39,21 @@ function display(e) {
     });
   };
 
+  const displayChevron = function() {
+    document.querySelectorAll('p.task-descr').forEach(descr => {
+      const task = this.projects
+                    .filter(project => project._projectName === descr.dataset.projectId)[0]
+                    .tasks.filter(task => task.id === descr.dataset.taskId)[0];
+      if (task._descr.length > 50) {
+        descr.closest('.description-container').classList.add('expand');
+      };
+    })
+  };
+
   const resetStrikeThrough = function() {
     document.querySelectorAll('input.task-check').forEach(task => task.checked = false);
     document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
-  }
+  };
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -230,6 +240,7 @@ function display(e) {
       closeDisplay(taskEl, taskEl.closest('.task-wrapper'), document.querySelector('.modify'));
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
     };
     
     const generateModifyTaskContent = function(elem) {
@@ -301,6 +312,7 @@ function display(e) {
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
       document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
     };
 
@@ -355,6 +367,7 @@ function display(e) {
       const checkedProject = e.target.closest('input[type="radio"].project-option');
       if (!e.target.closest('input[type="radio"].project-option')) return;
       selectMenuOption(checkedProject, document.querySelector('input#btn-projects'), setProjectOptionsButton, getActiveProject('.project-option'));
+      document.querySelector('.modify .form-main')?.classList.add('focus');
     };
 
     return {selectedOption, selectOption};
@@ -401,6 +414,7 @@ function display(e) {
     const checkedPriority = e.target.closest('input[type="radio"].priority-option');
     if (!checkedPriority) return;
     selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setPriorityOptionsButton, checkedPriority.closest('li').querySelector('svg'));
+    document.querySelector('.modify .form-main')?.classList.add('focus');
   };
 
   const selectProject = function() {    
@@ -430,6 +444,7 @@ function display(e) {
       displaySelectedProject();
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
       resetStrikeThrough();
     };
   };
@@ -454,6 +469,7 @@ function display(e) {
       btn.classList.contains('move-up') ? this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask) : this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
       resetStrikeThrough();
     };
 
@@ -465,6 +481,7 @@ function display(e) {
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
       generateProjects.call(this);
       resetStrikeThrough();
     };
@@ -491,14 +508,39 @@ function display(e) {
         });
       generateTasks.call(this);
       setCircleCheckboxTask.call(this);
+      displayChevron.call(this);
       generateProjects.call(this);
       resetStrikeThrough();
-    }
+    };
+
+    const clickonTaskDescription = function() {
+      const htmlChevronUp = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"/></svg>`;
+      const htmlChevronDown = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"/></svg>`;
+      const shortDescr = e.target.closest('p.task-descr');
+      if (!shortDescr || shortDescr.textContent.length <= 50) return;
+      console.log(shortDescr.textContent.length)
+      const descrContainer = shortDescr.closest('.description-container');
+      const task = this.projects
+        .filter(project => project._projectName === shortDescr.dataset.projectId)[0]
+        .tasks.filter(task => task.id === shortDescr.dataset.taskId)[0];
+      
+      const modifyTaskDescription = function(text, chevron) {
+        shortDescr.textContent = text;
+        descrContainer.removeChild(shortDescr.nextElementSibling);
+        descrContainer.insertAdjacentHTML('beforeend', chevron);
+        shortDescr.closest('.task').classList.toggle('full-descr');
+      };
+      
+      shortDescr.closest('.task').classList.contains('full-descr') ? modifyTaskDescription(task.shortenTaskDescr(), htmlChevronDown) : modifyTaskDescription(task._descr, htmlChevronUp);
+    };
+      
 
     moveTask.call(this);
     deleteTask.call(this);
     displayDeleteStrikethrough.call(this);
     clickonDeleteStrikethrough.call(this);
+    displayChevron.call(this);
+    clickonTaskDescription.call(this);
   }
 
   

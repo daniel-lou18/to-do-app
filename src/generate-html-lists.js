@@ -35,7 +35,6 @@ const generateTasks = function() {
   const [selectedProject] = [...document.querySelectorAll('input.sidebar-project')].filter(input => input.checked);
   document.querySelectorAll('.task-wrapper').forEach(task => document.querySelector('.tasks-container').removeChild(task));
   const [project] = this.projects.filter(project => project.id === selectedProject.dataset.id);
-  console.log(this.projects);
   project.tasks.forEach((task, index) => {
     const html = `
     <div class="task-wrapper">
@@ -59,7 +58,12 @@ const generateTasks = function() {
         <button class="btn-svg list-actions del-task">
           <svg class="todo-header-del trash" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
         </button>
-        <p class="task-descr" id="task-0">${task.shortenTaskDescr()}</p>
+        <div class="description-container">
+          <p class="task-descr" data-task-id=${task.id} data-project-id=${task._project}>${task.shortenTaskDescr()}</p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
         <div class="calendar-container">
           <svg class="task-calendar" style="width:15px;height:15px" viewBox="0 0 24 24">
             <path fill="currentColor" d="M19 3C20.11 3 21 3.89 21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.89 3.9 3 5 3H6V1H8V3H16V1H18V3H19M19 19V9H5V19H19M19 7V5H5V7H19M7 11H9V17H7V11" />

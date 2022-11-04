@@ -3,11 +3,21 @@ import { generateTasks } from "./generate-html-lists";
 const setCircleCheckboxTask = function() {
   const allCircleSpans = document.querySelectorAll('span.custom-checkbox');
   const allTasks = this.projects[0].tasks;
-  console.log(allTasks);
   allCircleSpans.forEach((span, i) => {
     span.style.borderColor = allTasks[i]._priorityColor;
     span.style.backgroundColor = allTasks[i]._priorityBackgroundColor;
   });
+};
+
+const displayChevron = function() {
+  document.querySelectorAll('p.task-descr').forEach(descr => {
+    const task = this.projects
+                  .filter(project => project._projectName === descr.dataset.projectId)[0]
+                  .tasks.filter(task => task.id === descr.dataset.taskId)[0];
+    if (task._descr.length > 50) {
+      descr.closest('.description-container').classList.add('expand');
+    };
+  })
 };
 
 const selectedInbox = function() {
@@ -36,6 +46,7 @@ const selectedInbox = function() {
     displaySelectedProject.call(this);
     generateTasks.call(this);
     setCircleCheckboxTask.call(this);
+    displayChevron.call(this);
   };
 };
 
