@@ -5,6 +5,17 @@ const initInbox = function() {
   count.textContent = this.projects[0].tasks.length;
 };
 
+const fadeInB = function(el) {
+  el.classList.add('transparent');
+  setTimeout(() => {
+    el.classList.add('fade-in');
+  }, 10)
+  setTimeout(() => {
+    el.classList.remove('fade-in');
+    el.classList.remove('transparent');
+  }, 1000)
+};
+
 const generateProjects = function() {
   initInbox.call(this);
   const element = document.querySelector('.personal-projects-list');
@@ -74,7 +85,7 @@ const generateTasks = function() {
     </div>
     `;
     document.querySelector('.tasks-container').insertAdjacentHTML('beforeend', html);
-  });  
+  });
 };
 
 

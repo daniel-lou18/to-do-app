@@ -1,6 +1,7 @@
 import Project from './project';
 import Task from './task';
 import {generateProjects, generateTasks, generateProjectsList, generatePriorityList } from './generate-html-lists';
+import effects from './effects';
 
 let modifyFormDisplayed = false;
 
@@ -54,6 +55,14 @@ function display(e) {
     document.querySelectorAll('input.task-check').forEach(task => task.checked = false);
     document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
   };
+
+  const initTasks = function() {
+    generateTasks.call(this);
+    setCircleCheckboxTask.call(this);
+    displayChevron.call(this);
+    resetStrikeThrough();
+  }
+
   
   const htmlNewFormModal = `
   <form class="task-form modal new-task" id="task-0">
@@ -142,7 +151,7 @@ function display(e) {
   };
 
   const displayModifyTask = function() {
-    const htmlFormModify = `<form class="task-form modify" id="task-modify">
+    const htmlFormModify = `<form class="task-form modify transparent" id="task-modify">
     <div class="form-main">
     <div class="form-text">
     <input class="form-text" type="text" name="task-text" id="task-modify" autofocus placeholder="Tâche" minlength="1" maxlength="60">
@@ -211,7 +220,7 @@ function display(e) {
     const cancelModifyForm = function() {
       const cancelBtn = e.target.closest('.modify button.cancel-new-task');
       if (!cancelBtn) return;
-      cancelBtn && closeDisplay(document.querySelector('.modify').previousElementSibling, cancelBtn.closest('.task-wrapper'), document.querySelector('.modify'));
+      effects.fadeOut(document.querySelector('.modify'), document.querySelector('.modify').previousElementSibling, cancelBtn.closest('.task-wrapper'), document.querySelector('.modify'))
       modifyFormDisplayed = false;
     };
 
@@ -222,8 +231,7 @@ function display(e) {
       const saveBtn = e.target.closest('.modify button.save-new-task');
       const cancelBtn = e.target.closest('.modify button.cancel-new-task');
       if (!modifyFormDisplayed || saveBtn || cancelBtn || clickedForm || modifyBtnOfTask) return;
-      console.log('wop')
-      closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.modify').closest('.task-wrapper'), document.querySelector('.modify'));
+      effects.fadeOut(document.querySelector('.modify'), document.querySelector('.modify').previousElementSibling, document.querySelector('.modify').closest('.task-wrapper'), document.querySelector('.modify'));
       modifyFormDisplayed = false;
       if (anyModifyBtn) displayFormModify.call(this);
     };
@@ -237,10 +245,8 @@ function display(e) {
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.splice(taskIndex, 0, task));
       generateProjects.call(this);
-      closeDisplay(taskEl, taskEl.closest('.task-wrapper'), document.querySelector('.modify'));
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
+      effects.fadeOut(document.querySelector('.modify'), taskEl, taskEl.closest('.task-wrapper'), document.querySelector('.modify'));
+      setTimeout(initTasks.bind(this), 520);
     };
     
     const generateModifyTaskContent = function(elem) {
@@ -267,6 +273,7 @@ function display(e) {
       if (!btnEdit || modifyFormDisplayed) return;
       const task = btnEdit.closest('.task');
       displayFormModifyGeneric.call(this, task);
+      effects.fadeIn(document.querySelector('.modify'));
     };
     
     displayFormModify.call(this);
@@ -279,6 +286,7 @@ function display(e) {
     const displayNewTaskModal = function() {
       if (!e.target.closest('button.add-task')) return;
       openDisplay(backDrop, backDrop, 'beforeend', htmlNewFormModal);
+      effects.fadeIn(backDrop);
       generateBtnLists.call(this, document.querySelector('.modal ul.project-input'), document.querySelector('ul.priority-input'));
       selectedPriorityModal();
       resetStrikeThrough();
@@ -288,9 +296,12 @@ function display(e) {
       const [checkedFormBtn] = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
       const outsideModal = e.target.closest('.backdrop');
       const cancelBtn = e.target.closest('.modal button.cancel-new-task');
-      cancelBtn && closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
+      if (cancelBtn) {
+        effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
+      };
       if (!outsideModal || e.target.closest('.modal') || checkedFormBtn) return;
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
+      backDrop.classList.add('transparent');
     };
 
     function clickOutside() {
@@ -310,9 +321,8 @@ function display(e) {
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
       closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
+      backDrop.classList.add('transparent');
+      initTasks.call(this);
       document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
     };
 
@@ -428,6 +438,7 @@ function display(e) {
       let textInput = document.querySelector('input.list-title');
       let colorInput = document.querySelector('.list-dot');
       textInput.value = projectInput.value[0].toUpperCase() + projectInput.value.slice(1);
+      effects.fadeInB(container);
       if (svg.classList.contains('feather-circle')) {
         container.removeChild(colorInput);
         container.insertAdjacentHTML('afterbegin', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill=${project._color} stroke="none" class="feather feather-circle list-dot"><circle cx="12" cy="12" r="5"/></svg>') 
@@ -441,11 +452,10 @@ function display(e) {
     };
 
     if (projectInput.checked) {
+      effects.fadeInB(document.querySelector('.todo-bottom'));
+      effects.fadeInB(document.querySelector('.tasks-container'));
       displaySelectedProject();
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
-      resetStrikeThrough();
+      initTasks.call(this);
     };
   };
 
@@ -464,13 +474,22 @@ function display(e) {
       const btn = e.target.closest('button.move');
       if (!btn) return;
       const taskEl = btn.closest('.task');
+      const nextTaskEl = taskEl.closest('.task-wrapper')?.nextElementSibling?.firstElementChild;
+      const prevTaskEl = taskEl.closest('.task-wrapper')?.previousElementSibling?.firstElementChild;
       const [projectIndex, taskIndex] = findTask.call(this, taskEl);
       const [clickedTask] = this.projects[projectIndex].tasks.splice(taskIndex, 1);
-      btn.classList.contains('move-up') ? this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask) : this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
-      resetStrikeThrough();
+      if (btn.classList.contains('move-up') && taskIndex > 0) {
+        console.log(taskIndex);
+        effects.fadeDown(prevTaskEl);
+        effects.fadeUp(taskEl);
+        this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask);
+        setTimeout(initTasks.bind(this), 510)
+      } else {
+        effects.fadeDown(taskEl);
+        effects.fadeUp(nextTaskEl);
+        this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
+        setTimeout(initTasks.bind(this), 510)
+      }
     };
 
     const deleteTask = function() {
@@ -479,11 +498,8 @@ function display(e) {
       const taskEl = btn.closest('.task');
       const [projectIndex, taskIndex] = findTask.call(this, taskEl);
       this.projects[projectIndex].tasks.splice(taskIndex, 1);
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
+      initTasks.call(this);
       generateProjects.call(this);
-      resetStrikeThrough();
     };
 
     const displayDeleteStrikethrough = function() {
@@ -504,13 +520,9 @@ function display(e) {
         .map(task => findTask.call(this, task))
         .forEach((iArray, i) => {
           this.projects[iArray[0]].tasks.splice(iArray[1] - i, 1)
-          console.log(iArray);
         });
-      generateTasks.call(this);
-      setCircleCheckboxTask.call(this);
-      displayChevron.call(this);
+      initTasks.call(this);
       generateProjects.call(this);
-      resetStrikeThrough();
     };
 
     const clickonTaskDescription = function() {
