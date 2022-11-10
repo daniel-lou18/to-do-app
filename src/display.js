@@ -45,7 +45,7 @@ function display(e) {
       const task = this.projects
                     .filter(project => project._projectName === descr.dataset.projectId)[0]
                     .tasks.filter(task => task.id === descr.dataset.taskId)[0];
-      if (task._descr.length > 50) {
+      if (task?._descr.length > 50) {
         descr.closest('.description-container').classList.add('expand');
       };
     })
@@ -61,6 +61,13 @@ function display(e) {
     setCircleCheckboxTask.call(this);
     displayChevron.call(this);
     resetStrikeThrough();
+  };
+
+  const clickOutsideMenu = function(formContainer) {
+    const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
+    if (checkedFormBtn || !formContainer) {
+      checkedFormBtn.forEach(btn => btn.checked = false);
+    };
   }
 
   
@@ -68,7 +75,7 @@ function display(e) {
   <form class="task-form modal new-task" id="task-0">
   <div class="form-main">
   <div class="form-text">
-  <input class="form-text" type="text" name="task-text" id="task-1" autofocus placeholder="Tâche" minlength="1" maxlength="60">
+  <input class="form-text" type="text" name="task-text" id="task-1" placeholder="Tâche" minlength="1" maxlength="60">
   </div>
   <div class="form-descr">
   <textarea class="form-descr" name="descr-1" id="descr-1" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
@@ -154,7 +161,7 @@ function display(e) {
     const htmlFormModify = `<form class="task-form modify transparent" id="task-modify">
     <div class="form-main">
     <div class="form-text">
-    <input class="form-text" type="text" name="task-text" id="task-modify" autofocus placeholder="Tâche" minlength="1" maxlength="60">
+    <input class="form-text" type="text" name="task-text" id="task-modify" placeholder="Tâche" minlength="1" maxlength="60">
     </div>
     <div class="form-descr">
     <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
@@ -231,9 +238,16 @@ function display(e) {
       const saveBtn = e.target.closest('.modify button.save-new-task');
       const cancelBtn = e.target.closest('.modify button.cancel-new-task');
       if (!modifyFormDisplayed || saveBtn || cancelBtn || clickedForm || modifyBtnOfTask) return;
-      effects.fadeOut(document.querySelector('.modify'), document.querySelector('.modify').previousElementSibling, document.querySelector('.modify').closest('.task-wrapper'), document.querySelector('.modify'));
+      closeDisplay(document.querySelector('.modify').previousElementSibling, document.querySelector('.modify').closest('.task-wrapper'), document.querySelector('.modify'));
       modifyFormDisplayed = false;
       if (anyModifyBtn) displayFormModify.call(this);
+    };
+
+    function clickOutsideModifyMenu() {
+      if (!modifyFormDisplayed) return;
+      const formContainer = e.target.closest('.form-container');
+      if (formContainer) return;
+      clickOutsideMenu(formContainer);
     };
   
     const saveModifiedTask = function() {
@@ -273,6 +287,7 @@ function display(e) {
       if (!btnEdit || modifyFormDisplayed) return;
       const task = btnEdit.closest('.task');
       displayFormModifyGeneric.call(this, task);
+      document.querySelector('.modify input.form-text').focus();
       effects.fadeIn(document.querySelector('.modify'));
     };
     
@@ -280,12 +295,14 @@ function display(e) {
     saveModifiedTask.call(this);
     cancelModifyForm();
     clickOutsideModifyForm.call(this);
+    clickOutsideModifyMenu();
   };
   
   const displayNewTask = function() {
     const displayNewTaskModal = function() {
       if (!e.target.closest('button.add-task')) return;
       openDisplay(backDrop, backDrop, 'beforeend', htmlNewFormModal);
+      document.querySelector('.modal input.form-text').focus();
       effects.fadeIn(backDrop);
       generateBtnLists.call(this, document.querySelector('.modal ul.project-input'), document.querySelector('ul.priority-input'));
       selectedPriorityModal();
@@ -300,18 +317,14 @@ function display(e) {
         effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
       };
       if (!outsideModal || e.target.closest('.modal') || checkedFormBtn) return;
-      closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
-      backDrop.classList.add('transparent');
+      effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
     };
 
-    function clickOutside() {
+    function clickOutsideModalMenu() {
       const backdrop = e.target.closest('.backdrop');
       const formContainer = e.target.closest('.form-container');
       if (formContainer || !backdrop) return;
-      const checkedFormBtn = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
-      if (checkedFormBtn || !formContainer) {
-        checkedFormBtn.forEach(btn => btn.checked = false);
-      };
+      clickOutsideMenu(formContainer);
     };
 
     const saveTask = function() {
@@ -329,7 +342,7 @@ function display(e) {
     displayNewTaskModal.call(this);
     cancelModal();
     saveTask.call(this);
-    clickOutside.call(this);
+    clickOutsideModalMenu();
       
       const displayFormDate = function() {
         const btnDate = e.target.closest('button.form-date');
@@ -477,19 +490,22 @@ function display(e) {
       const nextTaskEl = taskEl.closest('.task-wrapper')?.nextElementSibling?.firstElementChild;
       const prevTaskEl = taskEl.closest('.task-wrapper')?.previousElementSibling?.firstElementChild;
       const [projectIndex, taskIndex] = findTask.call(this, taskEl);
-      const [clickedTask] = this.projects[projectIndex].tasks.splice(taskIndex, 1);
+      const [clickedTask] = this.projects[projectIndex].tasks.slice(taskIndex, taskIndex + 1);
       if (btn.classList.contains('move-up') && taskIndex > 0) {
-        console.log(taskIndex);
         effects.fadeDown(prevTaskEl);
         effects.fadeUp(taskEl);
-        this.projects[projectIndex].tasks.splice(taskIndex -1, 0, clickedTask);
+        this.projects[projectIndex].tasks.splice(taskIndex, 1);
+        this.projects[projectIndex].tasks.splice(taskIndex - 1, 0, clickedTask);
         setTimeout(initTasks.bind(this), 510)
-      } else {
+      };
+      if (btn.classList.contains('move-down') && taskIndex !== -1 && taskIndex < this.projects[projectIndex].tasks.length - 1) {
+        console.log(taskIndex, this.projects[projectIndex].tasks.length);
         effects.fadeDown(taskEl);
         effects.fadeUp(nextTaskEl);
+        this.projects[projectIndex].tasks.splice(taskIndex, 1);
         this.projects[projectIndex].tasks.splice(taskIndex + 1, 0, clickedTask);
         setTimeout(initTasks.bind(this), 510)
-      }
+      };
     };
 
     const deleteTask = function() {

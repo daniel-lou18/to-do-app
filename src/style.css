@@ -251,7 +251,9 @@ input.list-title {
 
 .custom-checkbox {
   --check: 20px;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: var(--check);
   width: var(--check);
   margin-right: 12px;
@@ -392,6 +394,10 @@ p.task-descr {
   cursor: pointer;
 }
 
+.form-container label {
+  cursor: pointer;
+}
+
 .form-params {
   display: flex;
   justify-content: flex-start;
@@ -435,6 +441,7 @@ div.form-priority-container div.priority-input {
   display: flex;
   margin-top: 8px;
   justify-content: flex-end;
+  cursor: default;
 }
 
 .form-save button {
@@ -526,7 +533,7 @@ label.btn-projects > *:not(.hidden), .project-input label, .priority-input label
   gap: 3px;
 }
 
-input[type="checkbox"]:checked + .btn-wrapper label {
+.form-container:has([type="checkbox"]:checked) {
   background-color: lightgrey;
 }
 
