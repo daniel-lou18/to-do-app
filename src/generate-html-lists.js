@@ -53,9 +53,7 @@ const generateTasks = function() {
         <input class="task-check" type="checkbox" id="check-${index}" data-id=${task.id}>
         <label class="task-label" for="check-${index}">
           <span class="custom-checkbox">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke=${task._priorityColorName} stroke-width="3" stroke-linecap="square" stroke-linejoin="sqaure" class="feather feather-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke=${task._priorityColorName} stroke-width="3" stroke-linecap="square" stroke-linejoin="sqaure" class="feather feather-check"><polyline points="20 6 9 17 4 12"/></svg>
           </span>
           <span class="task-text">${task._taskName}</span>
         </label>
@@ -92,8 +90,7 @@ const generateTasks = function() {
 
 
 function generateProjectsList(element) {
-  const projectList = element;
-  if (projectList.contains(document.querySelector('li.personal'))) return;
+  if (element.contains(document.querySelector('li.personal'))) return;
   this.projects.forEach((project, index) => {
     if (index > 0) {
       const projectHtml = `
@@ -107,14 +104,13 @@ function generateProjectsList(element) {
         </label>
       </li>
       `;
-      projectList.insertAdjacentHTML('beforeend', projectHtml);
+      element.insertAdjacentHTML('beforeend', projectHtml);
     }
   });
 };
 
 function generatePriorityList(element) {
-  const projectList = element;
-  if (projectList.contains(document.querySelector('li.priority-item'))) return;
+  if (element.contains(document.querySelector('li.priority-item'))) return;
   for (let i = 1; i < 5; i++) {
     let html = `
       <li class="priority-input option priority-item" data-id="">
@@ -135,7 +131,7 @@ function generatePriorityList(element) {
         .replace('stroke="crimson"', 'stroke="black"');
     };
 
-    projectList.insertAdjacentHTML('beforeend', html);
+    element.insertAdjacentHTML('beforeend', html);
   };
 };
 
