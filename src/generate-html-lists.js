@@ -135,4 +135,30 @@ function generatePriorityList(element) {
   };
 };
 
-export { generateProjects, generateTasks, generateProjectsList, generatePriorityList };
+function generateProjectColorList(element) {
+  if (element.contains(document.querySelector('li.color-item'))) return;
+  for (let i = 1; i < 5; i++) {
+    let html = `
+      <li class="color-input option color-item" data-id="">
+        <input class="color-option" type="radio" name="color-option" data-id = "" id="priority-${i}" value="${i}">
+        <label for="priority-${i}">
+          <svg class="color-option xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="crimson" stroke="crimson" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+          </svg>
+          <span class="color-input option">Priority ${i}</span>
+        </label>
+      </li>
+      `;
+    if (i === 2) html = html.replaceAll("crimson", "darkorange");
+    if (i === 3) html = html.replaceAll("crimson", "cornflowerblue");
+    if (i === 4) {
+      html = html
+        .replace('fill="crimson"', 'fill="none"')
+        .replace('stroke="crimson"', 'stroke="black"');
+    };
+
+    element.insertAdjacentHTML('beforeend', html);
+  };
+};
+
+export { generateProjects, generateTasks, generateProjectsList, generatePriorityList, generateProjectColorList };

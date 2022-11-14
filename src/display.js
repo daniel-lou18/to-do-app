@@ -1,6 +1,6 @@
 import Project from './project';
 import Task from './task';
-import {generateProjects, generateTasks, generateProjectsList, generatePriorityList } from './generate-html-lists';
+import {generateProjects, generateTasks, generateProjectsList, generatePriorityList, generateProjectColorList } from './generate-html-lists';
 import effects from './effects';
 import {htmlNewFormModal, htmlFormModify, htmlNewFormProject} from './formsHtml';
 
@@ -233,6 +233,7 @@ function display(e) {
     };
 
     displayNewProjectModal.call(this);
+    // generateProjectColorList(document.querySelector('.modal ul.color-input'));
   }
   
   const selectMenuOption = function(option, btn, fn, fnArg) {

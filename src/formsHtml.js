@@ -1,20 +1,26 @@
 const htmlNewFormProject = function() {
   return `
 <form class="project-form modal new-project" id="task-0">
-<div class="form-main">
-<div class="form-text">
-<input class="form-text" type="text" name="task-text" id="task-1" placeholder="Tâche" minlength="1" maxlength="60">
+<div class="form-title-wrapper">
+  <div class="form-title">Add project</div>
 </div>
+<div class="form-main">
+<div class="form-text-container">
+  <label class="form-text" for="project-text">Name</label>
+  <input class="form-text" type="text" name="project-text" id="project-text" minlength="1" maxlength="30">
+</div>
+<div class="form-params-container">
+<div class="label-params">Color</div>
 <div class="form-params">
 <div class="form-color-container form-container">
 <input type="checkbox" class="btn-form" data-id="" name="btn-color" id="btn-color">
 <div class="btn-wrapper form-color">
 <label class="btn-color" for="btn-color">
   <div class="btn-color">
-    <svg class="form-color xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="crimson" stroke="crimson" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag">
-    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="grey" stroke="none" class="feather feather-circle">
+      <circle cx="12" cy="12" r="5"/>
     </svg>
-    <span class="form-color"></span>
+    <span class="form-color">Grey</span>
   </div>
 </label>
 </div>
@@ -25,9 +31,10 @@ const htmlNewFormProject = function() {
 </div>
 </div>
 </div>
+</div>
 <div class="form-save">
-<button class="cancel-new-task cancel" type="button">Annnuler</button>
-<button class="save-new-task save">Enregistrer</button>
+<button class="cancel-new-project cancel" type="button">Annnuler</button>
+<button class="save-new-project save">Enregistrer</button>
 </div>
 </form>`
 };
@@ -44,7 +51,7 @@ const htmlNewFormModal = function() {
 <textarea class="form-descr" name="descr-1" id="descr-1" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
 </div>
 <div class="form-params">
-<button type="button" class="form-date">
+<button type="button" class="form-date form-container">
 <svg class="form-date" style="width:15px;height:15px" viewBox="0 0 24 24">
 <path fill="currentColor" d="M19 3C20.11 3 21 3.89 21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.89 3.9 3 5 3H6V1H8V3H16V1H18V3H19M19 19V9H5V19H19M19 7V5H5V7H19M7 11H9V17H7V11" />
 </svg>
@@ -112,7 +119,7 @@ const htmlFormModify = function() {
 <textarea class="form-descr" name="descr-1" id="descr-modify" cols="30" rows="4" placeholder="Description" maxlength="300"></textarea>
 </div>
 <div class="form-params">
-<button type="button" class="form-date">
+<button type="button" class="form-date form-container">
 <svg class="form-date" style="width:15px;height:15px" viewBox="0 0 24 24">
 <path fill="currentColor" d="M19 3C20.11 3 21 3.89 21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.89 3.9 3 5 3H6V1H8V3H16V1H18V3H19M19 19V9H5V19H19M19 7V5H5V7H19M7 11H9V17H7V11" />
 </svg>
