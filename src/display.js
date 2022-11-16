@@ -1,4 +1,4 @@
-import Project from './project';
+import Project, { PersonalProject } from './project';
 import Task from './task';
 import {generateProjects, generateTasks, generateProjectsList, generatePriorityList, generateProjectColorList } from './generate-html-lists';
 import effects from './effects';
@@ -179,7 +179,7 @@ function display(e) {
     const cancelModal = function() {
       const [checkedFormBtn] = [...document.querySelectorAll('input.btn-form')].filter(btn => btn.checked);
       const outsideModal = e.target.closest('.backdrop');
-      const cancelBtn = e.target.closest('.modal button.cancel-new-task');
+      const cancelBtn = e.target.closest('.modal button.cancel');
       if (cancelBtn) {
         effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
       };
@@ -200,8 +200,7 @@ function display(e) {
       const { task, taskProject} = saveTaskInput(saveBtn);
       this.projects.forEach(project => project._projectName === taskProject.value && project.tasks.push(task));
       generateProjects.call(this);
-      closeDisplay(backDrop, backDrop, document.querySelector('.modal'));
-      backDrop.classList.add('transparent');
+      effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
       initTasks.call(this);
       document.querySelector('button.del-checked-task').parentElement.classList.add('transparent');
     };
@@ -230,10 +229,23 @@ function display(e) {
       openDisplay(backDrop, backDrop, 'beforeend', htmlNewFormProject.call(this));
       document.querySelector('.modal input.form-text').focus();
       effects.fadeIn(backDrop);
+      generateProjectColorList(document.querySelector('.modal ul.color-input'));
+      document.querySelector('input#color-grey').checked = true;
     };
 
+    const saveNewProject = function() {
+      if (!e.target.closest('button.save-new-project')) return;
+      e.preventDefault();
+      const projectName = document.querySelector('input#project-text').value;
+      const [projectColorEl] = [...document.querySelectorAll('li.color-input input')].filter(input => input.checked);
+      const newProject = new PersonalProject(projectName, projectColorEl.value);
+      this.projects.push(newProject);
+      generateProjects.call(this);
+      effects.fadeOut(backDrop, backDrop, backDrop, document.querySelector('.modal'))
+    }
+
     displayNewProjectModal.call(this);
-    // generateProjectColorList(document.querySelector('.modal ul.color-input'));
+    saveNewProject.call(this);
   }
   
   const selectMenuOption = function(option, btn, fn, fnArg) {
@@ -275,8 +287,8 @@ function display(e) {
     return {selectedOption, selectOption};
   };
 
-  const setPriorityOptionsButton = function(svgOption) {
-    const svg = document.querySelector('svg.form-priority');
+  const setOptionsButton = function(svgOption) {
+    const svg = document.querySelector('svg.custom-color');
     svg.setAttribute('fill', svgOption.getAttribute('fill'));
     svg.setAttribute('stroke', svgOption.getAttribute('stroke'));
   };
@@ -315,9 +327,16 @@ function display(e) {
   const selectPriority = function() {
     const checkedPriority = e.target.closest('input[type="radio"].priority-option');
     if (!checkedPriority) return;
-    selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setPriorityOptionsButton, checkedPriority.closest('li').querySelector('svg'));
+    selectMenuOption(checkedPriority, document.querySelector('input#btn-priority'), setOptionsButton, checkedPriority.closest('li').querySelector('svg'));
     document.querySelector('.modify .form-main')?.classList.add('focus');
   };
+
+  const selectProjectColor = function() {
+    const checkedColor = e.target.closest('input[type="radio"].color-option');
+    if (!checkedColor) return;
+    selectMenuOption(checkedColor, document.querySelector('input#btn-color'), setOptionsButton, checkedColor.closest('li').querySelector('svg'));
+    document.querySelector('label.btn-color span').textContent = checkedColor.value[0].toUpperCase() + checkedColor.value.slice(1);
+  }
 
   const selectProject = function() {    
     const projectInput = e.target.closest('input.sidebar-project');
@@ -456,6 +475,7 @@ function display(e) {
   displayNewProject.call(this);
   selectProjectBtn().selectOption.call(this);
   selectPriority.call(this);
+  selectProjectColor.call(this);
   checkMultipleDropdown();
   selectProject.call(this);
   taskActions.call(this);

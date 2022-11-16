@@ -37,7 +37,7 @@ body {
 }
 
 body > * {
-  padding: 15px 3px 15px 35px;
+  padding: 15px 0 15px 35px;
 }
 
 .content-container {
@@ -136,6 +136,10 @@ span.del-checked-task {
   border-radius: 5px;
 }
 
+.projects-group-container {
+  padding-right: 10px;
+}
+
 .project, .title-projects-container {
   display: grid;
   grid-template-columns: 24px 1fr 30px;
@@ -146,20 +150,17 @@ span.del-checked-task {
   border-radius: 5px;
 }
 
+.project {
+  height: 38px;
+}
+
 svg.cross:hover {
   background-color: var(--main-hv-color);
   cursor: pointer;
 }
 
-.title-projects-container button.add {
-  padding-right: 17px;
-
-}
-
 .count, .title-projects-container button:last-child {
-  justify-self: end;
-  padding-right: 10px;
-  padding-right: 25px;
+  justify-self: center;
   color: grey;
   font-size: 0.8rem;
 }
@@ -411,7 +412,7 @@ p.task-descr {
   position: relative;
 }
 
-div.project-input, div.priority-input {
+div.options-container {
   display: none;
   position: absolute;
   top: 100%;
@@ -433,8 +434,8 @@ div.form-priority-container div.priority-input {
   font-size: 0.8rem;
 }
 
-.project-input .option:hover, .priority-input .option:hover {
-  background-color: rgb(245,245,245, 0.8);
+.options-container .option:hover {
+  background-color: rgb(240,240,240);
 }
 
 .project-input label, .priority-input label {
@@ -542,22 +543,33 @@ form.new-project input[type="text"], .form-color-container {
   font-weight: normal;
 }
 
-form.new-project input[type="text"]:focus, .form-color-container:focus {
+form.new-project input[type="text"]:focus {
   border: 1px solid var(--main-hd-color);
   box-shadow: 0 0 1px 2px rgb(255, 99, 71, 0.3);
 
 }
 
+form.new-project .form-params {
+  position: relative;
+  align-items: center;
+}
+
 form.new-project label.btn-color {
-  padding: 5px 3px;
+  padding: 5px;
 }
 
 form.new-project div.btn-color {
   display: flex;
   align-items: center;
+  gap: 7px;
+}
+
+form.new-project div.btn-color span {
+  padding-top: 1px;
 }
 
 form.new-project .form-color-container {
+  display: block;
   width: 100%;
   padding: 0;
   margin: 0;
@@ -570,6 +582,24 @@ form.new-project .form-save {
 
 form.new-project .form-save button {
   padding: 7px 12px;
+}
+
+form.new-project .options-container {
+  width: 410px;
+  height: 300px;
+  overflow: scroll;
+}
+
+form.new-project .options-container label {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  gap: 7px;
+}
+
+form.new-project .options-container label span {
+  display: inline-block;
+  padding-top: 1px;
 }
 
 .hidden {
@@ -615,7 +645,7 @@ label.btn-projects > *:not(.hidden), .project-input label, .priority-input label
   background-color: lightgrey;
 }
 
-input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:checked ~ div.priority-input {
+input[type="checkbox"]:checked ~ div.options-container {
   display: block;
 }
 
@@ -661,3 +691,14 @@ input[type="checkbox"]:checked ~ div.project-input, input[type="checkbox"]:check
   color: white;
   background-color: var(--main-hd-color);
 }
+
+input.option + label > svg:last-child {
+  opacity: 0;
+  position: absolute;
+  right: 2%;
+}
+
+input.option:checked + label > svg:last-child {
+  opacity: 1;
+}
+
